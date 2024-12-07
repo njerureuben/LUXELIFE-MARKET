@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  {% load static %}
+  <title>Luxelife - Terms and Conditions</title>
+  <meta content="" name="description">
+  <meta content="" name="keywords">
+
+  <!-- Favicons -->
+  <link href="{% static 'images/favicon.png' %}" rel="icon">
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.gstatic.com" rel="preconnect">
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+  <link href="{% static 'style/vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+  <link href="{% static 'style/vendor/bootstrap-icons/bootstrap-icons.css' %}" rel="stylesheet">
+  <link href="{% static 'style/vendor/boxicons/css/boxicons.min.css' %}" rel="stylesheet">
+  <link href="{% static 'style/vendor/quill/quill.snow.css' %}" rel="stylesheet">
+  <link href="{% static 'style/vendor/quill/quill.bubble.css' %}" rel="stylesheet">
+  <link href="{% static 'style/vendor/remixicon/remixicon.css' %}" rel="stylesheet">
+  <link href="{% static 'style/vendor/simple-datatables/style.css' %}" rel="stylesheet">
+
+  <!-- Template Main CSS File -->
+  <link href="{% static 'style/register.css' %}" rel="stylesheet">
+</head>
+
+<body>
+
+  <main>
+    <div class="container">
+      <section class="section terms min-vh-100 d-flex flex-column align-items-center justify-content-center py-4">
+        <div class="container">
+          <div class="row justify-content-center">
+            <div class="col-lg-8 col-md-10">
+
+              <!-- Terms and Conditions Card -->
+              <div class="card mb-3">
+                <div class="card-body">
+                  <!-- Header with Logo -->
+                  <div class="text-center mb-4">
+                    <img src="{% static 'images/favicon.png' %}" alt="LuxeLife Logo" style="max-height: 60px;">
+<!--                      -->
+                    <h3 class="m-0" style="color: #000000;">
+                        <span class="text-primary px-3 mr-1">LuxeLife</span>Market
+                    </h3>
+                      <h3 class="card-title text-primary mt-3">Terms and Conditions</h3>
+                  </div>
+
+                  <!-- Terms Content -->
+                  <div class="pt-3">
+                    <h5>1. Introduction</h5>
+                    <p>
+                      Welcome to LuxeLife Market, your premier destination for luxurious items. By accessing or using our website, you agree to abide by the following Terms and Conditions. Please read them carefully before making any purchase.
+                    </p>
+
+                    <h5>2. Use of Our Website</h5>
+                    <p>
+                      By using our website, you confirm that you are at least 18 years old or have received parental consent. You agree not to misuse the website, including engaging in fraudulent transactions, spreading malware, or violating intellectual property rights.
+                    </p>
+
+                    <h5>3. Products and Pricing</h5>
+                    <p>
+                      All products listed on our website are subject to availability. Prices are displayed in your selected currency and include applicable taxes. LuxeLife Market reserves the right to change prices or discontinue items without prior notice.
+                    </p>
+
+                    <h5>4. Order and Payment</h5>
+                    <p>
+                      Orders are processed upon confirmation of payment. We accept major credit cards, PayPal, and other secure payment methods. LuxeLife Market is not responsible for delays caused by payment processing issues.
+                    </p>
+
+                    <h5>5. Shipping and Delivery</h5>
+                    <p>
+                      We offer worldwide shipping with estimated delivery times displayed at checkout. Shipping costs are calculated based on your location and selected delivery option. LuxeLife Market is not liable for customs delays or additional import duties.
+                    </p>
+
+                    <h5>6. Returns and Refunds</h5>
+                    <p>
+                      We accept returns within 30 days of delivery for items in their original condition. Refunds are processed to the original payment method. Shipping fees are non-refundable.
+                    </p>
+
+                    <h5>7. Limitation of Liability</h5>
+                    <p>
+                      LuxeLife Market is not liable for indirect, incidental, or consequential damages arising from the use of our products or website, except as required by law.
+                    </p>
+
+                    <h5>8. Governing Law</h5>
+                    <p>
+                      These Terms and Conditions are governed by the laws of Kenya. Any disputes shall be resolved exclusively in the courts of Kenya.
+                    </p>
+
+                    <h5>9. Contact Us</h5>
+                    <p>
+                      If you have any questions about these Terms and Conditions, please contact our customer service team at <a href="mailto:support@luxelife.com">support@luxelife.com</a>.
+                    </p>
+                  </div>
+
+                  <!-- Subscription Form -->
+                  <div class="mt-4">
+                    <h5 class="text-center">Stay Updated!</h5>
+                    <p class="text-center small text-muted">
+                      Subscribe to our newsletter to receive updates on new arrivals, exclusive offers, and more.
+                    </p>
+                    <form method="POST" class="row g-3" enctype="multipart/form-data">
+                      {% csrf_token %}
+                      <div class="col-md-9">
+                        <input type="email" class="form-control" placeholder="Enter your email address" required style="padding: 10px;">
+                      </div>
+                      <div class="col-md-3">
+                        <button type="submit" class="btn register-btn w-100" style="padding: 10px;">Subscribe</button>
+                      </div>
+                    </form>
+                  </div>
+                  <!-- End Subscription Form -->
+
+                  <!-- Back Button -->
+                  <div class="text-center mt-4">
+                    <a href="javascript:history.back()" class="btn btn-secondary w-100" style="padding: 10px;">Back</a>
+                  </div>
+                  <!-- End Back Button -->
+
+                </div>
+              </div>
+              <!-- End Terms and Conditions Card -->
+
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+  <!-- Vendor JS Files -->
+  <script src="{% static 'style/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+
+</body>
+
+</html>

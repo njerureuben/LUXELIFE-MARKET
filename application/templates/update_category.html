@@ -1,0 +1,147 @@
+{% extends 'adminbase.html' %}
+{% block admin %}
+
+<main id="main" class="main">
+
+    <div class="pagetitle">
+        <h1 style="color: #ffbf00">Update Product Categories</h1>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item" style="color: #000">Products</li>
+                <li class="breadcrumb-item" style="color: #000">Update Category</li>
+            </ol>
+        </nav>
+    </div><!-- End Page Title -->
+
+    <!-- Toast Container -->
+    {% if messages %}
+        <div class="toast-container position-fixed top-0 start-50 translate-middle-x p-3" style="z-index: 1055;">
+            {% for message in messages %}
+                <div class="toast align-items-center border-0 show"
+                    role="alert" aria-live="assertive" aria-atomic="true"
+                    style="background: {% if message.tags == 'error' %}linear-gradient(45deg, #ff4e50, #f9d423);{% else %}linear-gradient(45deg, #4caf50, #8bc34a);{% endif %}; color: white;">
+                    <div class="d-flex">
+                        <div class="toast-body">
+                            {{ message }}
+                        </div>
+                        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <section class="section">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Provide Category Details</h5>
+
+                        <!-- Form -->
+                        <form method="POST">
+                            {% csrf_token %}
+                            <!-- Category Name -->
+                            <div class="mb-3">
+                                <label class="form-label">Category Name</label>
+                                {{ form.category_name }}
+                            </div>
+
+                            <!-- Checkbox for Subcategories -->
+                            <div class="mb-3 form-check">
+                                <input type="checkbox" id="containsSubCategory" class="form-check-input" name="contains_subcategories" {% if form.contains_subcategories.value %}checked{% endif %}>
+                                <label class="form-check-label" for="containsSubCategory">Add Sub Categories?</label>
+                            </div>
+
+                            <!-- Subcategories Section -->
+                            <div id="subcategoriesContainer" style="display: {% if form.contains_subcategories.value %}block{% else %}none{% endif %};">
+                                <h5>Subcategories</h5>
+                                <div class="row g-2" id="subcategoryFields">
+                                    {% for subcategory in subcategories %}
+                                        <div class="col-md-4 position-relative">
+                                            <input type="text" name="subcategories[]" class="form-control mb-2" value="{{ subcategory.name }}" placeholder="Enter subcategory name">
+                                            <button type="button" class="btn remove-btn-danger btn-sm position-absolute top-0 end-0" onclick="this.closest('.col-md-4').remove();">
+                                                <i class="bi bi-dash-circle"></i>
+                                            </button>
+                                        </div>
+                                    {% empty %}
+                                        <!-- If no subcategories, show placeholder fields -->
+                                        <div class="col-md-4 position-relative">
+                                            <input type="text" name="subcategories[]" class="form-control mb-2" placeholder="Enter subcategory name">
+                                            <button type="button" class="btn remove-btn-danger btn-sm position-absolute top-0 end-0" onclick="this.closest('.col-md-4').remove();">
+                                                <i class="bi bi-dash-circle"></i>
+                                            </button>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                                <button type="button" id="addSubcategory" class="btn btn-sm register-btn">
+                                    <i class="bi bi-plus-circle"></i> Add Subcategory
+                                </button>
+                            </div>
+
+                            <!-- Submit Button -->
+                            <div class="mt-4">
+                                <button type="submit" class="btn btn-success">Submit</button>
+                            </div>
+                        </form>
+                        <!-- End of Form -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</main><!-- End #main -->
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const containsSubCategory = document.getElementById('containsSubCategory');
+        const subcategoriesContainer = document.getElementById('subcategoriesContainer');
+        const addSubcategoryButton = document.getElementById('addSubcategory');
+        const subcategoryFields = document.getElementById('subcategoryFields');
+
+        // Toggle subcategories visibility
+        containsSubCategory.addEventListener('change', () => {
+            subcategoriesContainer.style.display = containsSubCategory.checked ? 'block' : 'none';
+        });
+
+        // Add new subcategory input dynamically
+        addSubcategoryButton.addEventListener('click', () => {
+            const colDiv = document.createElement('div');
+            colDiv.className = 'col-md-4 position-relative'; // Each field takes 1/3 of a row
+
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.name = 'subcategories[]';
+            input.className = 'form-control mb-2';
+            input.placeholder = 'Enter subcategory name';
+
+            const removeBtn = document.createElement('button');
+            removeBtn.type = 'button';
+            removeBtn.className = 'btn remove-btn-danger btn-sm position-absolute top-0 end-0';
+            removeBtn.innerHTML = '<i class="bi bi-dash-circle"></i>';
+            removeBtn.style.transform = 'translate(50%, -50%)';
+            removeBtn.addEventListener('click', () => {
+                colDiv.remove(); // Remove the subcategory field
+            });
+
+            colDiv.appendChild(input);
+            colDiv.appendChild(removeBtn);
+            subcategoryFields.appendChild(colDiv);
+        });
+    });
+</script>
+
+
+<script>
+            document.addEventListener('DOMContentLoaded', () => {
+                const toasts = document.querySelectorAll('.toast');
+                toasts.forEach((toast) => {
+                    setTimeout(() => {
+                        toast.style.display = 'none'; // Remove the toast after animation
+                    }, 5000); // Match the duration in the CSS animation (5 seconds)
+                });
+            });
+ </script>
+
+{% endblock %}

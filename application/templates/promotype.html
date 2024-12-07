@@ -1,0 +1,104 @@
+{% extends 'adminbase.html' %}
+{% load static %}
+{% block admin %}
+
+<body>
+
+  <main id="main" class="main">
+
+    <div class="pagetitle d-flex justify-content-between align-items-center">
+      <div>
+        <h1>Promo Types</h1>
+        <nav>
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+            <li class="breadcrumb-item">Orders</li>
+            <li class="breadcrumb-item active">Promo Types</li>
+          </ol>
+        </nav>
+      </div>
+      <div>
+
+        <div class="d-inline-block ml-3">
+          <input type="text" class="form-control form-control-sm" placeholder="Search">
+        </div>
+      </div>
+    </div><!-- End Page Title -->
+
+    <section class="section">
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Promo Types List</h5>
+                <button class="btn btn-primary btn-sm" title="Add Promo"><i class="bi bi-plus"></i>Add Type</button>
+
+              <!-- Promo Codes Table -->
+              <table class="table table-striped table-hover">
+                <thead class="bg-secondary text-white">
+                  <tr>
+                    <th>#</th>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th></th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <!-- Sample Data Row -->
+                  <tr>
+                    <td>1</td>
+                    <td>Discount</td>
+                    <td>Discount</td>
+                    <td>
+                      <button class="btn btn-sm btn-warning"><i class="bi bi-pencil-square"></i></button>
+                    </td>
+                    <td>
+                      <button class="btn btn-sm btn-danger"><i class="bi bi-trash"></i> </button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>2</td>
+                    <td>Free Shipping</td>
+                    <td>Free Shipping</td>
+                    <td>
+                      <button class="btn btn-sm btn-warning"><i class="bi bi-pencil-square"></i> </button>
+                    </td>
+                    <td>
+                      <button class="btn btn-sm btn-danger"><i class="bi bi-trash"></i> </button>
+                    </td>
+                  </tr>
+                  <!-- Add dynamic data here -->
+                  {% for promo in promo_codes %}
+                  <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ promo.code }}</td>
+                    <td>{{ promo.type }}</td>
+                    <td>{{ promo.user.username }}</td>
+                    <td>
+                      <a href="{% url 'update_promo' promo.id %}" class="btn btn-sm btn-warning"><i class="bi bi-pencil-square"></i> Update</a>
+                    </td>
+                    <td>
+                      <a href="{% url 'delete_promo' promo.id %}" class="btn btn-sm btn-danger"><i class="bi bi-trash"></i> Delete</a>
+                    </td>
+                  </tr>
+                  {% empty %}
+                  <tr>
+                    <td colspan="6" class="text-center text-muted">No promo codes available.</td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+              <!-- End Promo Codes Table -->
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main><!-- End #main -->
+
+</body>
+
+{% endblock %}

@@ -1,0 +1,154 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<body>
+    <!-- Toast Container -->
+    <div id="toast-container" class="toast-container position-fixed top-0 start-50 translate-middle-x p-3" style="z-index: 1055;"></div>
+
+    <!-- Page Header Start -->
+    <div class="container-fluid bg-secondary mb-5">
+        <div class="d-flex flex-column align-items-center justify-content-center" style="min-height: 50px">
+            <h1 class="font-weight-semi-bold text-uppercase mb-3">Our Shop</h1>
+            <div class="d-inline-flex">
+                <p class="m-0"><a href="{% url 'index' %}">Home</a></p>
+                <p class="m-0 px-2">/</p>
+                {% if selected_category %}
+                <p class="m-0"><a href="{% url 'shop_category' category_id=selected_category.id %}">{{ selected_category.name }}</a></p>
+                {% if selected_subcategory %}
+                <p class="m-0 px-2">/</p>
+                <p class="m-0">{{ selected_subcategory.name }}</p>
+                {% endif %}
+                {% else %}
+                <p class="m-0">All Categories</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <!-- Page Header End -->
+
+    <div class="container-fluid pt-5">
+        <div class="row px-xl-5">
+            <!-- Shop Product Start -->
+            <div class="col-md-12">
+                <div class="row pb-3">
+                    {% for product in page_obj %}
+                    <div class="col-lg-3 col-md-4 col-sm-6 pb-1">
+                        <div class="card product-item border-0 mb-4">
+                            <div class="card-header product-img position-relative overflow-hidden bg-transparent border p-0">
+                                <img class="img-fluid w-100" src="{{ product.image.url }}" alt="{{ product.item_name }}">
+                            </div>
+                            <div class="card-body border-left border-right text-center p-0 pt-4 pb-3">
+                                <h6 class="text-truncate mb-3">{{ product.item_name }}</h6>
+                                <div class="d-flex justify-content-center">
+                                    <h6>KES {{ product.new_price }}</h6>
+                                    {% if product.old_price %}
+                                    <h6 class="text-muted ml-2"><del>KES {{ product.old_price }}</del></h6>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="card-footer d-flex justify-content-between bg-light border">
+                                <a href="#" class="btn btn-sm text-dark p-0"><i class="fas fa-eye text-primary mr-1"></i>View Detail</a>
+                                <a href="#" class="btn btn-sm text-dark p-0 add-to-cart" data-product-id="{{ product.id }}">
+                                    <i class="fas fa-shopping-cart text-primary mr-1"></i>Add To Cart
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="col-lg-12">
+                        <p class="text-center text-muted font-italic">No products available in this category.</p>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <!-- Pagination -->
+                {% if page_obj.paginator.num_pages > 1 %}
+                <div class="col-12 pb-1">
+                    <nav aria-label="Page navigation">
+                        <ul class="pagination justify-content-center mb-3">
+                            {% if page_obj.has_previous %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">
+                                    <span aria-hidden="true">&laquo;</span>
+                                    <span class="sr-only">Previous</span>
+                                </a>
+                            </li>
+                            {% endif %}
+                            {% for num in page_obj.paginator.page_range %}
+                            <li class="page-item {% if page_obj.number == num %}active{% endif %}">
+                                <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                            </li>
+                            {% endfor %}
+                            {% if page_obj.has_next %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next">
+                                    <span aria-hidden="true">&raquo;</span>
+                                    <span class="sr-only">Next</span>
+                                </a>
+                            </li>
+                            {% endif %}
+                        </ul>
+                    </nav>
+                </div>
+                {% endif %}
+            </div>
+            <!-- Shop Product End -->
+        </div>
+    </div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).on('click', '.add-to-cart', function (e) {
+        e.preventDefault(); // Prevent default action
+        const productId = $(this).data('product-id'); // Get the product ID from the button
+
+        $.ajax({
+            url: '/cart/add/' + productId + '/', // Endpoint to add the product to the cart
+            method: 'POST',
+            headers: { 'X-CSRFToken': '{{ csrf_token }}' }, // Include CSRF token for Django's CSRF protection
+            success: function (response) {
+                // Show success message as a toast notification
+                showToast(response.message, 'success');
+                // Update the cart count dynamically
+                $('#cart-count').text(response.cart_count);
+            },
+            error: function () {
+                // Show error message as a toast notification
+                showToast('Failed to add item to cart. Please try again.', 'error');
+            }
+        });
+    });
+
+    // Function to dynamically show toast notifications
+    function showToast(message, type) {
+        const backgroundColor = type === 'error'
+            ? 'linear-gradient(45deg, #ff4e50, #f9d423)'
+            : 'linear-gradient(45deg, #4caf50, #8bc34a)';
+
+        // Create the toast HTML
+        const toastHtml = `
+            <div class="toast align-items-center border-0 show"
+                role="alert" aria-live="assertive" aria-atomic="true"
+                style="background: ${backgroundColor}; color: white;">
+                <div class="d-flex">
+                    <div class="toast-body">${message}</div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+            </div>
+        `;
+
+        // Append the toast to the toast container
+        $('#toast-container').html(toastHtml);
+
+        // Auto-hide the toast after 5 seconds
+        setTimeout(() => {
+            $('#toast-container').empty(); // Remove the toast from the DOM
+        }, 5000);
+    }
+</script>
+
+
+</body>
+
+{% endblock %}

@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>LUXELIFE MARKET - Login</title>
+        {% load static %}
+        <meta content="width=device-width, initial-scale=1.0" name="viewport">
+        <meta content="Login Form Template" name="keywords">
+        <meta content="Login Form Template" name="description">
+
+        <!-- Favicon -->
+        <link href="{% static 'images/favicon.ico' %}" rel="icon">
+
+        <!-- Stylesheet -->
+        <link href="{% static 'style/loginstyle.css' %}" rel="stylesheet">
+
+        <style>
+            /* Toast container */
+            #toast-container {
+                position: fixed;
+                top: 20px;
+                left: 50%;
+                transform: translateX(-50%);
+                z-index: 1000;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+
+            /* Toast message styling */
+            .toast {
+                padding: 15px 20px;
+                margin: 10px 0;
+                border-radius: 5px;
+                font-size: 16px;
+                font-weight: bold;
+                font-family: Arial, Helvetica, sans-serif;
+                color: #fff;
+                background-color: rgba(0, 0, 0, 0.7);
+                opacity: 0;
+                animation: fadeInOut 5s forwards;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+                text-align: center;
+            }
+
+            /* Success Toast */
+            .toast.success {
+                background-color: #28a745; /* Green */
+            }
+
+            /* Error Toast */
+            .toast.error {
+                background-color: #dc3545; /* Red */
+            }
+
+            /* Info Toast */
+            .toast.info {
+                background-color: #17a2b8; /* Blue */
+            }
+
+            /* Animation for Fade In and Out */
+            @keyframes fadeInOut {
+                0%, 100% {
+                    opacity: 0;
+                    transform: translateY(-20px);
+                }
+                10%, 90% {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="wrapper login-3">
+            <div class="container">
+                <div class="col-left">
+                    <div class="login-text">
+                        <h2><img src="{% static 'images/favicon.png' %}" alt="Logo"></h2>
+                        <a href="" class="text-decoration-none">
+                            <h1 class="m-0 display-5 font-weight-semi-bold" style="color: #000000">
+                                <span class="text-primary font-weight-bold px-3 mr-1">LuxeLife</span>Market
+                            </h1>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-right">
+                    <div class="login-form">
+                        <h2>Login</h2>
+
+                        <!-- Toast Messages -->
+                        <!-- Toast Messages -->
+                        <div id="toast-container">
+                            {% if error_message %}
+                                <div class="toast error">
+                                    {{ error_message }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+
+                        <!-- Login Form -->
+                        <form method="POST" action="{% url 'login' %}" enctype="multipart/form-data">
+                             {% csrf_token %}
+                            <p>
+                                <input type="text" name="username" placeholder="Username" required>
+                            </p>
+                            <p>
+                                <input type="password" name="password" placeholder="Password" required>
+                            </p>
+                            <p>
+                                <input class="btn" type="submit" value="Sign In" />
+                            </p>
+                            <p>
+                                <a href="">Forget password?</a>
+                                <a href="{% url 'register' %}">Create an account.</a>
+                            </p>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- JavaScript for Toast Message Removal -->
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                const toasts = document.querySelectorAll('.toast');
+                toasts.forEach((toast) => {
+                    setTimeout(() => {
+                        toast.style.display = 'none'; // Remove the toast after animation
+                    }, 5000); // Match the duration in the CSS animation (5 seconds)
+                });
+            });
+        </script>
+    </body>
+</html>

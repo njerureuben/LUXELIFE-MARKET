@@ -1,0 +1,185 @@
+{% extends 'adminbase.html'%}
+{% load static %}
+{% block admin%}
+
+
+<main id="main" class="main">
+
+    <div class="pagetitle">
+      <h1 style="color:#ffbf00">Create a Product</h1>
+      <nav>
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item">Products</li>
+          <li class="breadcrumb-item">Create Products</li>
+        </ol>
+      </nav>
+    </div><!-- End Page Title -->
+
+
+  <!-- Toast Container -->
+    {% if messages %}
+        <div class="toast-container position-fixed top-0 start-50 translate-middle-x p-3" style="z-index: 1055;">
+            {% for message in messages %}
+                <div class="toast align-items-center border-0 show"
+                    role="alert" aria-live="assertive" aria-atomic="true"
+                    style="background: {% if message.tags == 'error' %}linear-gradient(45deg, #ff4e50, #f9d423);{% else %}linear-gradient(45deg, #4caf50, #8bc34a);{% endif %}; color: white;">
+                    <div class="d-flex">
+                        <div class="toast-body">
+                            {{ message }}
+                        </div>
+                        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+
+    <section class="section">
+      <div class="row">
+        <div class="col-lg-12">
+
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Provide Product Details</h5>
+
+                  <!-- Form -->
+                  <form class="row g-3 needs-validation" novalidate method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="row">
+
+
+
+                      <!-- Left Column -->
+                      <div class="col-md-6">
+                        <!-- Item Name -->
+                        <div class="mb-3">
+                          <label for="itemName" class="form-label">Item Name</label>
+                          {{ form.item_name }}
+                          {% if form.item_name.errors %}
+                            <div class="invalid-feedback d-block">{{ form.item_name.errors.0 }}</div>
+                          {% endif %}
+                        </div>
+
+                           <!-- Category -->
+                        <div class="mb-3">
+                          <label for="category_or_subcategory" class="form-label">Category / Subcategory</label>
+                          {{ form.category_or_subcategory }}
+                          {% if form.category_or_subcategory.errors %}
+                              <div class="invalid-feedback d-block">{{ form.category_or_subcategory.errors.0 }}</div>
+                          {% endif %}
+                        </div>
+
+                        <!-- Old Price -->
+                        <div class="mb-3">
+                          <label for="oldPrice" class="form-label">Old Price</label>
+                          {{ form.old_price }}
+                          {% if form.old_price.errors %}
+                            <div class="invalid-feedback d-block">{{ form.old_price.errors.0 }}</div>
+                          {% endif %}
+                        </div>
+
+
+                           <!-- New Price -->
+                        <div class="mb-3">
+                          <label for="newPrice" class="form-label">New Price</label>
+                          {{ form.new_price }}
+                          {% if form.new_price.errors %}
+                            <div class="invalid-feedback d-block">{{ form.new_price.errors.0 }}</div>
+                          {% endif %}
+                        </div>
+
+
+                          <!--                          Quantity-->
+                            <div class="mb-3">
+                           <label for="Quantity" class="form-label">Quantity</label>
+                           {{ form.quantity }}
+                           {% if form.quantity.errors %}
+                            <div class="invalid-feedback d-block">{{ form.quantity.errors.0 }}</div>
+                          {% endif %}
+                         </div>
+
+                      </div>
+
+                      <!-- Right Column -->
+                      <div class="col-md-6">
+
+                        <!-- Image -->
+                        <div class="mb-3">
+                          <label for="image" class="form-label">Product Image</label>
+                          {{ form.image }}
+                          {% if form.image.errors %}
+                            <div class="invalid-feedback d-block">{{ form.image.errors.0 }}</div>
+                          {% endif %}
+                        </div>
+
+                        <!-- Color -->
+                        <div class="mb-3">
+                          <label for="color" class="form-label">Color</label>
+                          {{ form.color }}
+                          {% if form.color.errors %}
+                            <div class="invalid-feedback d-block">{{ form.color.errors.0 }}</div>
+                          {% endif %}
+                        </div>
+
+                        <!-- Size -->
+                        <div class="mb-3">
+                          <label for="size" class="form-label">Size</label>
+                          {{ form.size }}
+                          {% if form.size.errors %}
+                            <div class="invalid-feedback d-block">{{ form.size.errors.0 }}</div>
+                          {% endif %}
+                        </div>
+
+
+
+<!--                          Description-->
+                        <div class="mb-3">
+                           <label for="itemDescription" class="form-label">Item Description</label>
+                           {{ form.item_description }}
+                           {% if form.item_description.errors %}
+                            <div class="invalid-feedback d-block">{{ form.item_description.errors.0 }}</div>
+                          {% endif %}
+                         </div>
+
+
+
+                      </div>
+                    </div>
+
+                    <!-- Item Description -->
+
+                      <div class="col-md-6">
+                      <button class="register-btn w-100" type="submit">Add Product</button>
+                    </div>
+
+
+
+
+                  </form>
+                  <!-- End of Form -->
+
+            </div>
+          </div>
+
+        </div>
+
+
+      </div>
+    </section>
+
+  </main><!-- End #main -->
+
+
+<script>
+            document.addEventListener('DOMContentLoaded', () => {
+                const toasts = document.querySelectorAll('.toast');
+                toasts.forEach((toast) => {
+                    setTimeout(() => {
+                        toast.style.display = 'none'; // Remove the toast after animation
+                    }, 5000); // Match the duration in the CSS animation (5 seconds)
+                });
+            });
+ </script>
+
+{% endblock %}

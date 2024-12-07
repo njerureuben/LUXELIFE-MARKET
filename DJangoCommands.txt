@@ -1,0 +1,100 @@
+1. pip install django
+2. django-admin startproject "project" .
+[ Under "" put the names of your project e.g OnlineShop
+3.python manage.py startapp "application"
+4. python manage.py runserver
+
+
+Kill server "ctrl + C"
+Put on  Server: python manage.py runserver
+
+
+On the Project(onlineshop)
+1. Settings.py -Under the installed_apps Section: type the name of your application which is customers
+
+2. urls.py - give a url to identify the application (customers) that we have just created
+3. Try & Check whether the application can be seen
+
+
+# Now let go to the Application Side
+The fronted files can be brought on to the framework (they are referred to as Templates)
+they should be added to the
+
+# Under templated dir. That where the html files exist
+
+# To populate them on the backend do the following
+# create a View (Python) function to initiate the template
+ in the views.py file of the application
+
+# create by basically copying the urls file similar to the one on the project level to the application level
+
+
+# FOr the Styling Sheet
+Register the static directory inside the settings file
+
+
+# Model Forms
+-- One is allowed is allowed to create form on Your Template but this form is created from Model
+-- Models are classes that interconnects between the frontend and the backend
+-- By form i mean the forms that users use to generate data
+-- This happens in the models.py at your
+
+create forms.py
+
+
+DATABASE LINKAGE TO THE SYSTEM COMMANDS
+1. python manage.py makemigrations
+2. python manage.py migrate
+3. python manage.py createsuperuser
+
+-- Leave the username blank to use the default
+-- Same as the email
+=-- Then password
+Then now access the DB on http://127.0.0.1:8000/admin/customers/customer/
+
+To work with images we need a library called 'pillow'
+-- use the command pip install pillow
+
+
+# Linking the Project to MySQL
+First Install MySQL client
+
+pip install pymysql
+
+Under setting Data
+
+Enter the server credentials
+Change them from now Sqlite3(Small Scale) to the MySQL for production purposes
+Then go to the Init file on Project Level
+
+Due to version Downgrade Django
+pip uninstall django
+pip install django==5.0.7
+pip show django -... to check the version
+
+API  BUILDING
+For example one can access the database without neccessarily getting the credentials
+
+Install the 'django rest framework'
+
+pip install djangorestframework
+define the framework on the settings.py file under INSTALLED_APPS
+on  customers create serializing
+name the file as serializers
+
+#Mpesa Integration
+Click on My Apps
+Check: Lipa na Mpesa, Mpesa SandBox
+Create App
+A card create with consumer Key,consumer Secret
+
+Click on APIS
+Click Authorization (learn More)
+
+Back to the settings.py file
+first Install the Daraja
+pip install django_daraja
+
+
+
+

@@ -1,0 +1,189 @@
+{% extends 'adminbase.html'%}
+<!--{% load static %}-->
+{% block admin %}
+
+
+<main id="main" class="main">
+
+    <div class="pagetitle">
+      <h1 style="color: #ffbf00">Create Admin</h1>
+      <nav>
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item" style="color: #000">Users</li>
+          <li class="breadcrumb-item" style="color: #000">Create Admin</li>
+        </ol>
+      </nav>
+    </div><!-- End Page Title -->
+
+    <!-- Toast Container -->
+    {% if messages %}
+        <div class="toast-container position-fixed top-0 start-50 translate-middle-x p-3" style="z-index: 1055;">
+            {% for message in messages %}
+                <div class="toast align-items-center border-0 show"
+                    role="alert" aria-live="assertive" aria-atomic="true"
+                    style="background: {% if message.tags == 'error' %}linear-gradient(45deg, #ff4e50, #f9d423);{% else %}linear-gradient(45deg, #4caf50, #8bc34a);{% endif %}; color: white;">
+                    <div class="d-flex">
+                        <div class="toast-body">
+                            {{ message }}
+                        </div>
+                        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <section class="section">
+      <div class="row">
+        <div class="col-lg-12">
+
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Provide Admin Details</h5>
+
+              <!-- Form -->
+              <form class="row g-3 needs-validation" novalidate method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="row">
+                  <!-- Left Column -->
+                  <div class="col-md-6">
+                    <!-- Fullname -->
+                    <div class="mb-3">
+                      <label for="yourName" class="form-label">Admin Name</label>
+                      {{ form.fullname }}
+                      {% if form.fullname.errors %}
+                          <div class="invalid-feedback d-block">
+                              {{ form.fullname.errors.0 }}
+                          </div>
+                      {% endif %}
+                    </div>
+
+                    <!-- Username -->
+                    <div class="mb-3">
+                      <label for="yourUsername" class="form-label">Admin Username</label>
+                      <div class="input-group has-validation">
+                        <span class="input-group-text" id="inputGroupPrepend">@</span>
+                        {{form.username}}
+                        {% if form.username.errors %}
+                        <div class="invalid-feedback d-block">
+                          {{ form.username.errors.0 }}
+                        </div>
+                      {% endif %}
+                        <div class="invalid-feedback">Please choose a username.</div>
+                      </div>
+                    </div>
+
+                    <!-- Email -->
+                    <div class="mb-3">
+                      <label for="yourEmail" class="form-label">Admin Email</label>
+                      {{ form.email }}
+                      {% if form.email.errors %}
+                          <div class="invalid-feedback d-block">
+                              {{ form.email.errors.0 }}
+                          </div>
+                      {% endif %}
+                    </div>
+
+                    <!-- Phone -->
+                    <div class="mb-3">
+                      <label for="phone" class="form-label">Admin Phone</label>
+                      {{ form.phone }}
+                      {% if form.phone.errors %}
+                          <div class="invalid-feedback d-block">
+                              {{ form.phone.errors.0 }}
+                          </div>
+                      {% endif %}
+                    </div>
+
+                    <!-- Profile Image -->
+                    <div class="mb-3">
+                      <label for="yourImage" class="form-label">Upload Your Profile</label>
+                      {{ form.image }}
+                      {% if form.image.errors %}
+                          <div class="invalid-feedback d-block">
+                              {{ form.image.errors.0 }}
+                          </div>
+                      {% endif %}
+                    </div>
+                  </div>
+
+                  <!-- Right Column -->
+                  <div class="col-md-6">
+                    <!-- Country -->
+                    <div class="mb-3">
+                      <label for="country" class="form-label">Admin Country</label>
+                      {{ form.country }}
+                      {% if form.country.errors %}
+                          <div class="invalid-feedback d-block">
+                              {{ form.country.errors.0 }}
+                          </div>
+                      {% endif %}
+                    </div>
+
+                    <!-- Address -->
+                    <div class="mb-3">
+                      <label for="yourAddress" class="form-label">Admin Address</label>
+                      {{ form.address }}
+                      {% if form.address.errors %}
+                          <div class="invalid-feedback d-block">
+                              {{ form.address.errors.0 }}
+                          </div>
+                      {% endif %}
+                    </div>
+
+                    <!-- Password -->
+                    <div class="mb-3">
+                      <label for="yourPassword" class="form-label">Password</label>
+                      {{ form.password1 }}
+                      {% if form.password1.errors %}
+                          <div class="invalid-feedback d-block">
+                              {{ form.password1.errors.0 }}
+                          </div>
+                      {% endif %}
+                    </div>
+
+                    <!-- Confirm Password -->
+                    <div class="mb-3">
+                      <label for="rePassword" class="form-label">Re-enter Password</label>
+                      {{ form.password2 }}
+                      {% if form.password2.errors %}
+                          <div class="invalid-feedback d-block">
+                              {{ form.password2.errors.0 }}
+                          </div>
+                      {% endif %}
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="col-lg-6">
+                  <button class="register-btn w-100" type="submit">Create Admin</button>
+                </div>
+              </form>
+              <!-- End of Form -->
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+  </main><!-- End #main -->
+
+
+
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                const toasts = document.querySelectorAll('.toast');
+                toasts.forEach((toast) => {
+                    setTimeout(() => {
+                        toast.style.display = 'none'; // Remove the toast after animation
+                    }, 5000); // Match the duration in the CSS animation (5 seconds)
+                });
+            });
+        </script>
+
+
+{% endblock %}
+
+

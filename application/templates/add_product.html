@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  {% load static %}
+  <title>Luxelife - Add Product</title>
+  <meta content="" name="description">
+  <meta content="" name="keywords">
+
+  <!-- Favicons -->
+  <link href="{% static 'images/favicon.png' %}" rel="icon">
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.gstatic.com" rel="preconnect">
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+  <link href="{% static 'style/vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+  <link href="{% static 'style/vendor/bootstrap-icons/bootstrap-icons.css' %}" rel="stylesheet">
+  <link href="{% static 'style/vendor/boxicons/css/boxicons.min.css' %}" rel="stylesheet">
+  <link href="{% static 'style/vendor/quill/quill.snow.css' %}" rel="stylesheet">
+  <link href="{% static 'style/vendor/quill/quill.bubble.css' %}" rel="stylesheet">
+  <link href="{% static 'style/vendor/remixicon/remixicon.css' %}" rel="stylesheet">
+  <link href="{% static 'style/vendor/simple-datatables/style.css' %}" rel="stylesheet">
+
+  <!-- Template Main CSS File -->
+  <link href="{% static 'style/register.css' %}" rel="stylesheet">
+</head>
+
+<body>
+
+  <main>
+    <div class="container">
+      <section class="section register min-vh-100 d-flex flex-column align-items-center justify-content-center py-4">
+        <div class="container">
+          <div class="row justify-content-center">
+            <div class="col-lg-8 col-md-10">
+
+              <div class="card mb-3">
+                <div class="card-body">
+                  <!-- Header -->
+                  <div class="text-center">
+                    <h2 class="m-0 display-5 font-weight-semi-bold" style="color: #000000;">
+                      Add a <span class="text-primary font-weight-bold">Product</span>
+                    </h2>
+                  </div>
+
+                  <div class="pt-4 pb-2 text-center">
+                    <h5 class="card-title pb-0 fs-4">Provide Product Details</h5>
+                    <p class="text-center small">Fill in the form below to add a product to your store.</p>
+                  </div>
+
+                  <!-- Form -->
+                  <form class="row g-3 needs-validation" novalidate method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="row">
+                      <!-- Left Column -->
+                      <div class="col-md-6">
+                        <!-- Item Name -->
+                        <div class="mb-3">
+                          <label for="itemName" class="form-label">Item Name</label>
+                          {{ form.item_name }}
+                          {% if form.item_name.errors %}
+                            <div class="invalid-feedback d-block">{{ form.item_name.errors.0 }}</div>
+                          {% endif %}
+                        </div>
+
+                        <!-- Old Price -->
+                        <div class="mb-3">
+                          <label for="oldPrice" class="form-label">Old Price</label>
+                          {{ form.old_price }}
+                          {% if form.old_price.errors %}
+                            <div class="invalid-feedback d-block">{{ form.old_price.errors.0 }}</div>
+                          {% endif %}
+                        </div>
+
+                        <!-- Category -->
+                        <div class="mb-3">
+                          <label for="category" class="form-label">Category</label>
+                          {{ form.category }}
+                          {% if form.category.errors %}
+                            <div class="invalid-feedback d-block">{{ form.category.errors.0 }}</div>
+                          {% endif %}
+                        </div>
+
+                         <div class="mb-3">
+                           <label for="itemDescription" class="form-label">Item Description</label>
+                           {{ form.item_description }}
+                           {% if form.item_description.errors %}
+                            <div class="invalid-feedback d-block">{{ form.item_description.errors.0 }}</div>
+                          {% endif %}
+                         </div>
+
+
+                      </div>
+
+                      <!-- Right Column -->
+                      <div class="col-md-6">
+                        <!-- New Price -->
+                        <div class="mb-3">
+                          <label for="newPrice" class="form-label">New Price</label>
+                          {{ form.new_price }}
+                          {% if form.new_price.errors %}
+                            <div class="invalid-feedback d-block">{{ form.new_price.errors.0 }}</div>
+                          {% endif %}
+                        </div>
+
+                        <!-- Image -->
+                        <div class="mb-3">
+                          <label for="image" class="form-label">Upload Image</label>
+                          {{ form.image }}
+                          {% if form.image.errors %}
+                            <div class="invalid-feedback d-block">{{ form.image.errors.0 }}</div>
+                          {% endif %}
+                        </div>
+
+                        <!-- Color -->
+                        <div class="mb-3">
+                          <label for="color" class="form-label">Color</label>
+                          {{ form.color }}
+                          {% if form.color.errors %}
+                            <div class="invalid-feedback d-block">{{ form.color.errors.0 }}</div>
+                          {% endif %}
+                        </div>
+
+                        <!-- Size -->
+                        <div class="mb-3">
+                          <label for="size" class="form-label">Size</label>
+                          {{ form.size }}
+                          {% if form.size.errors %}
+                            <div class="invalid-feedback d-block">{{ form.size.errors.0 }}</div>
+                          {% endif %}
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Item Description -->
+
+
+                    <!-- Submit Button -->
+                    <div class="col-12">
+                      <button class="register-btn w-100 btn btn-dark" type="submit">Add Product</button>
+                    </div>
+                  </form>
+                  <!-- End of Form -->
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+  <!-- Vendor JS Files -->
+  <script src="{% static 'style/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+
+</body>
+
+</html>

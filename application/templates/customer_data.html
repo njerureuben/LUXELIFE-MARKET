@@ -1,0 +1,101 @@
+{% extends 'adminbase.html' %}
+{% load static %}
+{% block admin %}
+
+<main id="main" class="main">
+
+    <div class="pagetitle">
+        <h1 style="color:#ffbf00">Customer Data</h1>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">Users</li>
+                <li class="breadcrumb-item">Customers Data</li>
+            </ol>
+        </nav>
+    </div><!-- End Page Title -->
+
+    <!-- Customer data section -->
+    <section class="section">
+        <div class="row">
+            <div class="col-lg-12">
+
+                <div class="card">
+                    <div class="card-body">
+
+                          <!-- Search field -->
+                        <div class="d-flex justify-content-end mb-3">
+                            <div class="input-group" style="max-width: 300px; margin-top: 20px; margin-bottom: 0">
+                                <input id="tableSearch" type="text" class="form-control" placeholder="Search..." aria-label="Search">
+                                <button class="btn btn-outline-secondary" type="button">
+                                    <i class="bi bi-search"></i> <!-- Bootstrap search icon -->
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Responsive Table Wrapper -->
+                        <div class="responsive-table" id="adminTable">
+                            <table class="table admin-data-table">
+                                <thead class="table-header">
+                                    <tr>
+                                        <th style="width: 50px;">#</th> <!-- Row number column with reduced width -->
+                                        <th>PHOTO</th>
+                                        <th>USERNAME</th>
+                                        <th>EMAIL</th>
+                                        <th>PHONE</th>
+                                        <th>COUNTRY</th>
+                                        <th>ADDRESS</th>
+                                        <th></th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody class="table-body">
+                                    {% for application in data %}
+                                    <tr class="table-row">
+                                        <td>{{ forloop.counter }}</td> <!-- Use the forloop.counter for row numbering -->
+                                        <td>
+                                            {% if application.image %}
+                                            <img src="{{ application.image.url }}" alt="{{ application.fullname }}" class="admin-photo">
+                                            {% else %}
+                                            <img src="{% static 'images/placeholder.png' %}" alt="Photo" class="admin-photo">
+                                            {% endif %}
+                                        </td>
+                                        <td>{{ application.user.username }}</td>
+                                        <td>{{ application.user.email }}</td>
+                                        <td>{{ application.phone }}</td>
+                                        <td>{{ application.country }}</td>
+                                        <td>{{ application.address }}</td>
+                                        <td>
+                                            <a href="#" class="btn btn-success bi bi-pencil" type="button" title="Edit"></a>
+                                        </td>
+                                        <td>
+                                            <a href="#" class="btn btn-danger bi bi-trash" type="button" onclick="return confirm('Are you sure you want to delete this entry?');" title="Delete"></a>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div><!-- End Table Wrapper -->
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+    <!-- End Customer data section -->
+
+</main><!-- End #main -->
+
+<script>
+    document.getElementById('tableSearch').addEventListener('keyup', function () {
+        let filter = this.value.toLowerCase();
+        let rows = document.querySelectorAll('#adminTable tbody .table-row');
+
+        rows.forEach(row => {
+            let textContent = row.textContent.toLowerCase();
+            row.style.display = textContent.includes(filter) ? '' : 'none';
+        });
+    });
+</script>
+
+{% endblock %}

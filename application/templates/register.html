@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  {% load static %}
+  <title>Luxelife - Register</title>
+  <meta content="" name="description">
+  <meta content="" name="keywords">
+
+  <!-- Favicons -->
+  <link href="{% static 'images/favicon.png' %}" rel="icon">
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.gstatic.com" rel="preconnect">
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+  <link href="{% static 'style/vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+  <link href="{% static 'style/vendor/bootstrap-icons/bootstrap-icons.css' %}" rel="stylesheet">
+  <link href="{% static 'style/vendor/boxicons/css/boxicons.min.css' %}" rel="stylesheet">
+  <link href="{% static 'style/vendor/quill/quill.snow.css' %}" rel="stylesheet">
+  <link href="{% static 'style/vendor/quill/quill.bubble.css' %}" rel="stylesheet">
+  <link href="{% static 'style/vendor/remixicon/remixicon.css' %}" rel="stylesheet">
+  <link href="{% static 'style/vendor/simple-datatables/style.css' %}" rel="stylesheet">
+
+  <!-- Template Main CSS File -->
+  <link href="{% static 'style/register.css' %}" rel="stylesheet">
+</head>
+
+<body>
+
+  <main>
+    <div class="container">
+      <section class="section register min-vh-100 d-flex flex-column align-items-center justify-content-center py-4">
+        <div class="container">
+          <div class="row justify-content-center">
+            <div class="col-lg-8 col-md-10">
+
+              <div class="card mb-3">
+                <div class="card-body">
+                  <!-- Header -->
+                  <div class="login-text text-center">
+                    <a href="" class="text-decoration-none">
+                      <h2 class="m-0 display-5 font-weight-semi-bold" style="color: #000000;">
+                        <span class="text-primary font-weight-bold px-3 mr-1">LuxeLife</span>Market
+                      </h2>
+                    </a>
+                  </div>
+
+
+
+                   <!-- Toast Container -->
+    {% if messages %}
+        <div class="toast-container position-fixed top-0 start-50 translate-middle-x p-3" style="z-index: 1055;">
+            {% for message in messages %}
+                <div class="toast align-items-center border-0 show"
+                    role="alert" aria-live="assertive" aria-atomic="true"
+                    style="background: {% if message.tags == 'error' %}linear-gradient(45deg, #ff4e50, #f9d423);{% else %}linear-gradient(45deg, #4caf50, #8bc34a);{% endif %}; color: white;">
+                    <div class="d-flex">
+                        <div class="toast-body">
+                            {{ message }}
+                        </div>
+                        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+
+
+                  <div class="pt-4 pb-2 text-center">
+                    <h5 class="card-title pb-0 fs-4">Create an Account</h5>
+                    <p class="text-center small">Enter your personal details to create account</p>
+                  </div>
+
+                  <!-- Form -->
+                  <form class="row g-3 needs-validation" novalidate method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <!-- Two Columns -->
+                    <div class="row">
+                      <!-- Left Column -->
+                      <div class="col-md-6">
+                        <!-- Fullname -->
+                        <div class="mb-3">
+                          <label for="yourName" class="form-label">Your Name</label>
+                          {{ form.fullname }}
+
+                          {% if form.fullname.errors %}
+                        <div class="invalid-feedback d-block">
+                          {{ form.fullname.errors.0 }}
+                        </div>
+                         {% endif %}
+                        </div>
+
+                        <!-- Username -->
+                    <div class="mb-3">
+                      <label for="yourUsername" class="form-label">Username</label>
+                      <div class="input-group has-validation">
+                        <span class="input-group-text" id="inputGroupPrepend">@</span>
+                        {{form.username}}
+                        {% if form.username.errors %}
+                        <div class="invalid-feedback d-block">
+                          {{ form.username.errors.0 }}
+                        </div>
+                      {% endif %}
+                        <div class="invalid-feedback">Please choose a username.</div>
+                      </div>
+                    </div>
+                        <!-- Email -->
+                        <div class="mb-3">
+                          <label for="yourEmail" class="form-label">Your Email</label>
+                          {{ form.email }}
+                          {% if form.email.errors %}
+                        <div class="invalid-feedback d-block">
+                          {{ form.email.errors.0 }}
+                        </div>
+                      {% endif %}
+                        </div>
+                        <!-- Phone -->
+                        <div class="mb-3">
+                          <label for="phone" class="form-label">Phone</label>
+                          {{ form.phone }}
+                          {% if form.phone.errors %}
+                        <div class="invalid-feedback d-block">
+                          {{ form.phone.errors.0 }}
+                        </div>
+                      {% endif %}
+                        </div>
+
+                         <!-- Country -->
+                        <div class="mb-3">
+                          <label for="country" class="form-label">Country</label>
+                          {{ form.country }}
+                           {% if form.country.errors %}
+                        <div class="invalid-feedback d-block">
+                          {{ form.country.errors.0 }}
+                        </div>
+                      {% endif %}
+
+                        </div>
+
+
+                      </div>
+
+                      <!-- Right Column -->
+                      <div class="col-md-6">
+
+                        <!-- Address -->
+                        <div class="mb-3">
+                           <label for="yourEmail" class="form-label">Your Address</label>
+                          {{ form.address }}
+                           {% if form.address.errors %}
+                        <div class="invalid-feedback d-block">
+                          {{ form.address.errors.0 }}
+                        </div>
+                          {% endif %}
+                        </div>
+
+<!--                        Image Start-->
+                            <div class="mb-3">
+                           <label for="yourEmage" class="form-label">Upload Your Profile</label>
+                          {{ form.image }}
+                           {% if form.image.errors %}
+                        <div class="invalid-feedback d-block">
+                          {{ form.image.errors.0 }}
+                        </div>
+                          {% endif %}
+                        </div>
+
+<!--                        Image End-->
+
+                        <!-- Password -->
+                        <div class="mb-3">
+                          <label for="yourPassword" class="form-label">Password</label>
+                          {{ form.password1 }}
+                              {% if form.password1.errors %}
+                        <div class="invalid-feedback d-block">
+                          {{ form.password1.errors.0 }}
+                        </div>
+                        {% endif %}
+                        </div>
+
+                        <!-- Confirm Password -->
+                        <div class="mb-3">
+                          <label for="rePassword" class="form-label">Re-enter Password</label>
+                              {{ form.password2 }}
+                             {% if form.password2.errors %}
+                            <div class="invalid-feedback d-block">
+                              {{ form.password2.errors.0 }}
+                            </div>
+                            {% endif %}
+                        </div>
+
+
+                         <!-- Terms and Conditions -->
+                        <div class="mb-3">
+<!--                          <label for="rePassword" class="form-label">Re-enter Password</label>-->
+                          <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="acceptTerms">
+                            <label class="form-check-label" for="acceptTerms">
+                              I agree and accept the <a href="{% url 'terms' %}">terms and conditions</a>
+                            </label>
+                            <div class="invalid-feedback">You must agree before submitting.</div>
+                          </div>
+                        </div>
+
+
+                      </div>
+                    </div>
+
+
+                    <div class="col-12">
+                      <button class="register-btn w-100 btn btn-dark" type="submit" id="submitBtn" disabled>Create Account</button>
+                    </div>
+                    <div class="col-12 text-left">
+                      <p class="small mb-0">Already have an account? <a href="{% url 'login' %}">Log in</a></p>
+                    </div>
+                  </form>
+                  <!-- End of Form -->
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+          <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                const toasts = document.querySelectorAll('.toast');
+                toasts.forEach((toast) => {
+                    setTimeout(() => {
+                        toast.style.display = 'none'; // Remove the toast after animation
+                    }, 5000); // Match the duration in the CSS animation (5 seconds)
+                });
+            });
+        </script>
+
+
+  <!-- Vendor JS Files -->
+  <script src="{% static 'style/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const checkbox = document.getElementById('acceptTerms');
+      const submitBtn = document.getElementById('submitBtn');
+      const formFields = document.querySelectorAll('input[type="text"], input[type="email"], input[type="password"]');
+
+      function validateForm() {
+        let allFieldsFilled = true;
+
+        formFields.forEach(field => {
+          if (field.value.trim() === '') {
+            allFieldsFilled = false;
+          }
+        });
+
+        submitBtn.disabled = !(checkbox.checked && allFieldsFilled);
+      }
+
+      // Add event listeners
+      formFields.forEach(field => {
+        field.addEventListener('input', validateForm);
+      });
+
+      checkbox.addEventListener('change', validateForm);
+    });
+  </script>
+
+</body>
+
+</html>
