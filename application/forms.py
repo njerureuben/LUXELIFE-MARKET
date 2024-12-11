@@ -2,6 +2,7 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from .models import Profile, Product, Category, Subcategory, PromoCodeType
+from django.contrib.auth.forms import PasswordChangeForm
 
 
 # This is the registration for a normal Customer
@@ -86,6 +87,24 @@ class RegistrationForm(UserCreationForm):
                 image=self.cleaned_data.get('image')  # Save the uploaded image
             )
         return user
+
+class ProfileForm(forms.ModelForm):
+    class Meta:
+        model = Profile
+        fields = ['fullname', 'phone', 'address', 'country', 'image']
+        widgets = {
+            'fullname': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter Full Name'}),
+            'phone': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter Phone'}),
+            'address': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter Address'}),
+            'country': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter Country'}),
+            'image': forms.FileInput(attrs={'class': 'form-control'}),
+        }
+
+class CustomPasswordChangeForm(PasswordChangeForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs.update({'class': 'form-control'})
 
 # this is the product form
 class ProductForm(forms.ModelForm):
@@ -385,3 +404,28 @@ class PromoCodeTypeForm(forms.ModelForm):
             'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter Promo Code Type'}),
             'description': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Enter Description'}),
         }
+
+class PaymentForm(forms.Form):
+    phone_number = forms.CharField(
+        label='Phone Number',
+        max_length=15,
+        widget=forms.TextInput(
+            attrs={
+                'class': 'form-control',
+                'placeholder': 'Enter Phone Number',
+                'pattern': r'\d+',  # Only numeric values
+                'title': 'Please enter a valid phone number',
+            }
+        )
+    )
+    amount = forms.IntegerField(
+        label='Amount',
+        min_value=1,
+        max_value=250000,
+        widget=forms.NumberInput(
+            attrs={
+                'class': 'form-control',
+                'placeholder': 'Enter Amount',
+            }
+        )
+    )

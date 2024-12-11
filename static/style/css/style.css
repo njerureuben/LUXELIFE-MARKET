@@ -2371,6 +2371,7 @@ fieldset:disabled a.btn {
 
 .btn-primary {
   color: #fff;
+  outline: none;
   background-color: #ffbf00;
   border-color: #ffbf00;
 }
@@ -2383,6 +2384,7 @@ fieldset:disabled a.btn {
 
 .btn-primary:focus, .btn-primary.focus {
   color: #fff;
+  outline: none;
   background-color: #ffcf40;
   border-color: #ffcf40;
   box-shadow: 0 0 0 0.2rem rgba(29, 93, 138, 0.5);
@@ -5331,47 +5333,7 @@ a.close.disabled {
   pointer-events: none;
 }
 
-.toast {
-  flex-basis: 350px;
-  max-width: 350px;
-  font-size: 0.875rem;
-  background-color: rgba(255, 255, 255, 0.85);
-  background-clip: padding-box;
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.1);
-  opacity: 0;
-}
 
-.toast:not(:last-child) {
-  margin-bottom: 0.75rem;
-}
-
-.toast.showing {
-  opacity: 1;
-}
-
-.toast.show {
-  display: block;
-  opacity: 1;
-}
-
-.toast.hide {
-  display: none;
-}
-
-.toast-header {
-  display: flex;
-  align-items: center;
-  padding: 0.25rem 0.75rem;
-  color: #6c757d;
-  background-color: rgba(255, 255, 255, 0.85);
-  background-clip: padding-box;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-}
-
-.toast-body {
-  padding: 0.75rem;
-}
 
 .modal-open {
   overflow: hidden;
@@ -9689,4 +9651,44 @@ a.text-dark:hover, a.text-dark:focus {
     font-size: 0.8rem; /* Adjust badge size */
     padding: 0.25em 0.5em; /* Adjust padding for smaller badges */
 }
+
+
+.form-control {
+    border: 1px solid #a39999; /* Example: 1px solid light gray */
+    /*border-radius: 4px; !* Optional: For rounded corners *!*/
+    outline: none;
+    /*padding: 8px; !* Optional: To add some internal spacing *!*/
+}
+
+.form-control:focus {
+    outline: none; /* Removes the default outline */
+    border-color: #ffbf00; /* Optional: Customize the border color when focused */
+    box-shadow: none; /* Optional: Ensures no shadow effect is applied */
+}
+
+.fas.fa-times[data-bs-dismiss="modal"] {
+    border: none;
+    color: #ffbf00;
+    background: none;
+    cursor: pointer; /* Ensures it looks like a clickable button */
+}
+
+.fas.fa-times[data-bs-dismiss="modal"]:focus {
+    outline: none; /* Removes the outline when focused (clicked or tabbed) */
+    box-shadow: none; /* Ensures there's no shadow on focus */
+}
+
+.fas.fa-times[data-bs-dismiss="modal"]:active {
+    outline: none; /* Removes outline when active */
+    box-shadow: none; /* Ensures there's no shadow when active */
+}
+
+
+
+.btn:focus {
+    outline: none;
+    box-shadow: none; /* Optional: Remove any box-shadow if it appears on focus */
+}
+
+
 

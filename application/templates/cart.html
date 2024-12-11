@@ -48,11 +48,11 @@
         {% csrf_token %}
         <div class="input-group quantity mx-auto" style="width: 100px;">
             <div class="input-group-btn">
-                <button class="btn btn-sm btn-primary" type="submit" name="quantity" value="{{ item.quantity|add:'-1' }}" {% if item.quantity == 1 %}disabled{% endif %}>
-                    <i class="fa fa-minus"></i>
+                <button class="btn btn-sm btn-primary" type="submit" name="quantity" value="{{ item.quantity|add:'-1' }}" {% if item.quantity == 1 %}disabled{% endif %} style="outline: none">
+                    <i class="fa fa-minus" style="outline: none"></i>
                 </button>
             </div>
-            <input type="text" class="form-control form-control-sm bg-secondary text-center" value="{{ item.quantity }}" readonly>
+            <input type="text" class="form-control form-control-sm bg-secondary text-center" value="{{ item.quantity }}" readonly style="border: none">
             <div class="input-group-btn">
                 <button class="btn btn-sm btn-primary" type="submit" name="quantity" value="{{ item.quantity|add:'1' }}">
                     <i class="fa fa-plus"></i>
@@ -85,14 +85,14 @@
 
             <!-- Cart Summary -->
             <div class="col-lg-4">
-                <form class="mb-5" action="">
-                    <div class="input-group">
-                        <input type="text" class="form-control p-4" placeholder="Promo Code">
-                        <div class="input-group-append">
-                            <button class="btn btn-primary">Apply Promo</button>
-                        </div>
-                    </div>
-                </form>
+<!--                <form class="mb-5" action="">-->
+<!--&lt;!&ndash;                    <div class="input-group">&ndash;&gt;-->
+<!--&lt;!&ndash;                        <input type="text" class="form-control p-4" placeholder="Promo Code">&ndash;&gt;-->
+<!--&lt;!&ndash;                        <div class="input-group-append">&ndash;&gt;-->
+<!--&lt;!&ndash;                            <button class="btn btn-primary">Apply Promo</button>&ndash;&gt;-->
+<!--&lt;!&ndash;                        </div>&ndash;&gt;-->
+<!--&lt;!&ndash;                    </div>&ndash;&gt;-->
+<!--                </form>-->
                 <div class="card border-secondary mb-5">
                     <div class="card-header bg-secondary border-0">
                         <h4 class="font-weight-semi-bold m-0">Totals</h4>
@@ -108,7 +108,7 @@
                             <!-- Shipping Fee -->
                             <div class="d-flex justify-content-between">
                                 <h6 class="font-weight-medium">Shipping</h6>
-                                <h6 class="font-weight-medium">KES 10</h6> <!-- Assume fixed shipping fee -->
+                                <h6 class="font-weight-medium">KES 100</h6> <!-- Assume fixed shipping fee -->
                             </div>
                         {% else %}
                             <p class="text-muted text-center">Your cart is empty.</p>
@@ -120,7 +120,7 @@
                             <!-- Total -->
                             <div class="d-flex justify-content-between mt-2">
                                 <h5 class="font-weight-bold">Total</h5>
-                                <h5 class="font-weight-bold">KES {{ cart.total_price|add:10 }}</h5> <!-- Subtotal + Shipping -->
+                                <h5 class="font-weight-bold">KES {{ cart.total_price|add:0 }}</h5> <!-- Subtotal + Shipping -->
                             </div>
                             <a href="{% url 'checkout' %}" class="btn btn-block btn-primary my-3 py-3">Proceed To Checkout</a>
                         </div>

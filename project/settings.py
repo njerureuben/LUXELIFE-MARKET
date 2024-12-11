@@ -26,9 +26,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'application',
-    # 'rest_framework',
-    # 'django_daraja'
-    # 'crispy_forms',
+    'rest_framework',
+    'django_daraja'
+
 ]
 
 MIDDLEWARE = [
@@ -135,3 +135,14 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+MPESA_ENVIRONMENT = 'sandbox'
+MPESA_CONSUMER_KEY = 'yA5szBbqHE3Bd7BG1JlSsqc5NA1ey5iRN6uJodoyrpEiA9X1'
+MPESA_CONSUMER_SECRET = 'eIgjYxe2EJIamFg4dtPscuaiYZDS0fGIvmCL5SqqlmranPGjgHbwOoskOKAL4ij9'
+MPESA_SHORTCODE = '174379'
+MPESA_EXPRESS_SHORTCODE = '174379'
+MPESA_SHORTCODE_TYPE = 'paybill'
+MPESA_PASSKEY = 'bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919'
+MPESA_INITIATOR_USERNAME = 'testapi'
+MPESA_INITIATOR_SECURITY_CREDENTIALS = 'Safaricom999!*!'

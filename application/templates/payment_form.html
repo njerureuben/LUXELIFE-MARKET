@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Luxelife Market - Payment</title>
+    {% load static %}
+
+    <!-- Favicon -->
+    <link href="{% static 'images/favicon.ico' %}" rel="icon">
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+
+    <!-- Libraries Stylesheet -->
+    <link href="{% static 'style/lib/owlcarousel/assets/owl.carousel.min.css' %}" rel="stylesheet">
+
+    <!-- Customized Stylesheet -->
+    <link href="{% static 'style/css/style.css' %}" rel="stylesheet">
+  </head>
+  <body class="d-flex align-items-center justify-content-center" style="min-height: 100vh; background-color: #f8f9fa;">
+    <div class="card" style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); padding: 20px; max-width: 500px; width: 100%;">
+      <h3 class="text-center" style="margin-bottom: 20px;">Make Payment</h3>
+
+      <!-- Display Error Message -->
+      {% if error_message %}
+      <div class="alert alert-danger" role="alert" style="color: #721c24; background-color: #f8d7da; border-color: #f5c6cb; padding: 10px; margin-bottom: 20px;">
+        {{ error_message }}
+      </div>
+      {% endif %}
+
+      <!-- Display Success Message -->
+      {% if success_message %}
+      <div class="alert alert-success" role="alert" style="color: #155724; background-color: #d4edda; border-color: #c3e6cb; padding: 10px; margin-bottom: 20px;">
+        {{ success_message }}
+      </div>
+      {% endif %}
+
+      <!-- Payment Form -->
+      <form method="POST" class="needs-validation" novalidate onsubmit="handleFormSubmit(event)">
+        {% csrf_token %}
+
+        <!-- Phone Number Field -->
+        <div class="mb-3" style="margin-bottom: 15px;">
+          <label for="phone" class="form-label">Phone Number</label>
+          {{ form.phone_number }}
+        </div>
+
+        <!-- Amount Field (Readonly) -->
+        <div class="mb-3" style="margin-bottom: 15px;">
+          <label for="amount" class="form-label">Amount</label>
+          <input type="text" class="form-control" id="amount" name="amount" value="{{ request.GET.amount }}" readonly>
+        </div>
+
+        <!-- Hidden Fields to Pass Additional Information (Optional) -->
+        <input type="hidden" name="cart_id" value="{{ request.GET.cart_id }}">
+        <input type="hidden" name="total_price" value="{{ request.GET.amount }}">
+
+        <!-- Submit Button -->
+        <button type="submit" class="btn register-btn w-100" id="submitButton" style="background-color: #ffbf00; color: #fff; border-radius: 30px; padding: 10px;">
+          <span id="spinner" class="spinner" style="display: inline-block;"></span>
+          <span id="buttonText" class="register-btn">Pay</span>
+        </button>
+      </form>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+      function handleFormSubmit(event) {
+        event.preventDefault();
+
+        const submitButton = document.getElementById("submitButton");
+        const buttonText = document.getElementById("buttonText");
+        const spinner = document.getElementById("spinner");
+
+        buttonText.textContent = "Processing...";
+        spinner.style.display = "inline-block";
+        submitButton.disabled = true;
+
+        // Submit the form
+        event.target.submit();
+      }
+    </script>
+  </body>
+</html>

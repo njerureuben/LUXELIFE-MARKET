@@ -8,7 +8,7 @@ urlpatterns = [
     # Authentication Routes
     path('', views.login_user, name='login'),
     path('register/', views.register, name='register'),
-    path('user/', views.user, name='user'),
+    # path('user/', views.user, name='user'),
 
     # General User Routes
     path('index/', views.index, name='index'),
@@ -25,6 +25,7 @@ urlpatterns = [
     path('shop/', views.shop, name='shop'),
     path('detail/', views.detail, name='detail'),
     path('checkout/', views.checkout, name='checkout'),
+    # path("checkout/", views.checkout, name="checkout"),
     path('terms/', views.terms, name='terms'),
 
     # path('products/', views.products, name='products'),
@@ -53,6 +54,25 @@ urlpatterns = [
     # Promo code
     path('code/', views.promocode, name='promocode'),
     path('promo/promotype/', views.promotype, name='promotype'),
+
+
+    # User Profile update
+    path('user/', views.user_profile_view, name='user_profile'),
+    path('user/edit/', views.user_profile_view, name='edit_profile'),
+    path('user/change-password/', views.user_profile_view, name='change_password'),
+    path('trandy-products/', views.random_products_view, name='random_products'),
+    path('cart/add/<int:product_id>/', views.add_to_cart, name='add_to_cart'),
+
+
+    # Admin Profile
+    path('profile/', views.adminprofile, name='adminprofile'),
+
+
+    # Mpesa Integration
+    path('payment/', views.payment_view, name='payment'),
+    path('callback/', views.payment_callback, name='payment_callback'),
+    path('stk-status/', views.stk_status_view, name='stk_status'),
+path('create_order/', views.create_order, name='create_order'),
 
 ]
 

@@ -1,21 +1,43 @@
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import User
-from django.db.models import Count, Max
-from django.http import JsonResponse
+import base64
+import json
+from datetime import datetime
+import os
+import re
+from random import sample
 
-from .forms import RegistrationForm, ProductForm, AdminRegistrationForm, AdminCustomerRegistrationForm, CategoryForm
+import requests
+from django.db import transaction
+from django.db.models import Count
+from django.http import JsonResponse, HttpResponseBadRequest
+from django.views.decorators.csrf import csrf_exempt
+
+from .forms import RegistrationForm, ProductForm, AdminRegistrationForm, AdminCustomerRegistrationForm, CategoryForm, \
+    PaymentForm
 from django.contrib.auth import authenticate, login
-from django.shortcuts import redirect, get_object_or_404
 from django.contrib import messages
-from django.shortcuts import render
-from django.shortcuts import render, get_object_or_404
-from .models import Product, Category, Subcategory, Cart, CartItem
-from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
-from django.shortcuts import render
+from .models import Cart, CartItem, Order, OrderItem, Transaction
 from .models import Category, Subcategory, Product
-from .models import Profile, Category, Subcategory, Product
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth import update_session_auth_hash
+from .models import Profile
+from .forms import ProfileForm, CustomPasswordChangeForm
+from dotenv import load_dotenv
 
+
+
+# Load environment variables
+load_dotenv()
+
+# Retrieve variables from the environment
+CONSUMER_KEY = os.getenv("CONSUMER_KEY")
+CONSUMER_SECRET = os.getenv("CONSUMER_SECRET")
+MPESA_PASSKEY = os.getenv("MPESA_PASSKEY")
+
+MPESA_SHORTCODE = os.getenv("MPESA_SHORTCODE")
+CALLBACK_URL = os.getenv("CALLBACK_URL")
+MPESA_BASE_URL = os.getenv("MPESA_BASE_URL")
 
 # Create your views here.
 def index(request):
@@ -138,8 +160,8 @@ def detail(request):
 def checkout(request):
     return render(request, 'checkout.html',{'current_page':'checkout'})
 
-def user(request):
-    return render(request, 'user.html',{'current_page':'user'})
+# def user(request):
+#     return render(request, 'user.html',{'current_page':'user'})
 
 def register(request): # request.POST,
     if request.method == 'POST':
@@ -157,9 +179,10 @@ def register(request): # request.POST,
     return render(request, 'register.html', {'form': form, 'current_page': 'register'})
 
 
+
 # this handles the user logins
 def login_user(request):
-    error_message = None  # Initialize a variable for error messages
+    error_message: None = None  # Initialize a variable for error messages
 
     if request.method == 'POST':
         username = request.POST.get('username')
@@ -211,8 +234,6 @@ def products(request):
         form = ProductForm()
 
     return render(request, 'products.html', {'form': form})
-
-
 
 
 # Admin Registration field
@@ -347,9 +368,6 @@ def update_category(request, id):
 
     return render(request, 'update_category.html', {'form': form, 'category': category, 'subcategories': subcategories})
 
-
-
-
 # View to handle category deletion
 def delete(request, id):
     category = get_object_or_404(Category, id=id)
@@ -471,5 +489,408 @@ def promotype(request):
     return render(request, 'promotype.html',{'current_page':'promotype'})
 
 
+@login_required
+def user_profile_view(request):
+    # Fetch the profile associated with the logged-in user
+    profile = get_object_or_404(Profile, user=request.user)
+
+    # Profile form for editing
+    profile_form = ProfileForm(instance=profile)
+    # Password change form
+    password_form = CustomPasswordChangeForm(user=request.user)
+
+    if request.method == 'POST':
+        if 'fullname' in request.POST:  # Profile edit form submission
+            profile_form = ProfileForm(request.POST, request.FILES, instance=profile)
+            if profile_form.is_valid():
+                profile_form.save()
+                messages.success(request, "Profile updated successfully!")
+                return redirect('user_profile')
+            else:
+                messages.error(request, "Error updating profile.")
+        elif 'new_password1' in request.POST:  # Password change form submission
+            password_form = CustomPasswordChangeForm(data=request.POST, user=request.user)
+            if password_form.is_valid():
+                password_form.save()
+                update_session_auth_hash(request, request.user)  # Keep the user logged in
+                messages.success(request, "Password changed successfully!")
+                return redirect('user_profile')
+            else:
+                messages.error(request, "Error changing password.")
+
+    return render(request, 'user.html', {
+        'profile': profile,  # Ensure profile is passed
+        'profile_form': profile_form,
+        'password_form': password_form,
+    })
 
 
+
+
+# Display the 6 products(Trandy products)
+def random_products_view(request):
+    """
+    View to fetch up to 6 random products.
+    """
+    all_products = list(Product.objects.all())  # Convert QuerySet to a list
+    random_products = sample(all_products, min(len(all_products), 6))  # Sample up to 6 products
+
+    # Prepare data for the response
+    data = [
+        {
+            "id": product.id,
+            "item_name": product.item_name,
+            "new_price": str(product.new_price),  # Convert Decimal to string for JSON serialization
+            "old_price": str(product.old_price) if product.old_price else None,
+            "image_url": product.image.url if product.image else None,
+        }
+        for product in random_products
+    ]
+
+    return JsonResponse({"random_products": data})
+
+
+
+
+# Admin Profile
+def adminprofile(request):
+    return render(request, 'adminprofile.html')
+
+# The check out element
+@login_required
+def checkout(request):
+    cart = Cart.objects.filter(user=request.user).first()
+
+    if request.method == "POST":
+        # Collect billing and shipping details
+        # (same as your previous code)
+
+        if not cart or cart.items.count() == 0:
+            messages.error(request, "Your cart is empty.")
+            return redirect("cart")
+
+        try:
+            with transaction.atomic():
+                # Create the Order
+                order = Order.objects.create(
+                    user=request.user,
+                    total_price=cart.total_price(),
+                    # Add other necessary fields for the order
+                )
+
+                # Create OrderItems
+                for item in cart.items.all():
+                    OrderItem.objects.create(
+                        order=order,
+                        product=item.product,
+                        quantity=item.quantity,
+                        price=item.product.new_price * item.quantity,
+                    )
+
+                # Clear cart after successful order
+                cart.items.all().delete()
+
+                # Redirect to payment view (STK Push)
+                phone = format_phone_number(request.user.profile.phone_number)  # Assuming user has a phone_number field
+                amount = cart.total_price()
+                response = initiate_stk_push(phone, amount)
+
+                if response.get("ResponseCode") == "0":
+                    checkout_request_id = response["CheckoutRequestID"]
+                    messages.success(request, "Order placed successfully! Please complete the payment.")
+                    return redirect(f"/payment/?checkout_request_id={checkout_request_id}")  # Pass checkout_request_id for status tracking
+                else:
+                    error_message = response.get("errorMessage", "Failed to initiate STK Push. Please try again.")
+                    messages.error(request, error_message)
+                    return redirect("checkout")
+
+        except Exception as e:
+            messages.error(request, f"An error occurred: {str(e)}")
+            return redirect("checkout")
+
+    return render(request, "checkout.html", {"cart": cart})
+
+
+'''
+Below is the MPESA Handling Section
+'''
+# Phone number formatting and validation
+def format_phone_number(phone):
+    phone = phone.replace("+", "")
+    if re.match(r"^254\d{9}$", phone):
+        return phone
+    elif phone.startswith("0") and len(phone) == 10:
+        return "254" + phone[1:]
+    else:
+        raise ValueError("Invalid phone number format")
+
+# Generate M-Pesa access token
+def generate_access_token():
+    try:
+        credentials = f"{CONSUMER_KEY}:{CONSUMER_SECRET}"
+        encoded_credentials = base64.b64encode(credentials.encode()).decode()
+
+        headers = {
+            "Authorization": f"Basic {encoded_credentials}",
+            "Content-Type": "application/json",
+        }
+        response = requests.get(
+            f"{MPESA_BASE_URL}/oauth/v1/generate?grant_type=client_credentials",
+            headers=headers,
+        ).json()
+
+        if "access_token" in response:
+            return response["access_token"]
+        else:
+            raise Exception("Access token missing in response.")
+
+    except requests.RequestException as e:
+        raise Exception(f"Failed to connect to M-Pesa: {str(e)}")
+
+# Initiate STK Push and handle response
+def initiate_stk_push(phone, amount):
+    try:
+        token = generate_access_token()
+        headers = {"Authorization": f"Bearer {token}", "Content-Type": "application/json"}
+
+        timestamp = datetime.now().strftime('%Y%m%d%H%M%S')
+        stk_password = base64.b64encode(
+            (MPESA_SHORTCODE + MPESA_PASSKEY + timestamp).encode()
+        ).decode()
+
+        request_body = {
+            "BusinessShortCode": MPESA_SHORTCODE,
+            "Password": stk_password,
+            "Timestamp": timestamp,
+            "TransactionType": "CustomerPayBillOnline",
+            "Amount": amount,
+            "PartyA": phone,
+            "PartyB": MPESA_SHORTCODE,
+            "PhoneNumber": phone,
+            "CallBackURL": CALLBACK_URL,
+            "AccountReference": "account",
+            "TransactionDesc": "Payment for goods",
+        }
+
+        response = requests.post(
+            f"{MPESA_BASE_URL}/mpesa/stkpush/v1/processrequest",
+            json=request_body,
+            headers=headers,
+        ).json()
+
+        return response
+
+    except Exception as e:
+        print(f"Failed to initiate STK Push: {str(e)}")
+        return e
+
+# Payment View
+def payment_view(request):
+    if request.method == "POST":
+        form = PaymentForm(request.POST)
+        if form.is_valid():
+            try:
+                phone = format_phone_number(form.cleaned_data["phone_number"])
+                amount = form.cleaned_data["amount"]
+                response = initiate_stk_push(phone, amount)
+                print(response)
+
+                # If 0 means that the STK has been sent successfully
+                if response.get("ResponseCode") == "0":
+                    checkout_request_id = response["CheckoutRequestID"]
+                    return render(request, "pending.html", {"checkout_request_id": checkout_request_id})
+                # STK has not been sent
+                else:
+                    error_message = response.get("errorMessage", "Failed to send STK push. Please try again.")
+                    return render(request, "payment_form.html", {"form": form, "error_message": error_message})
+
+            except ValueError as e:
+                return render(request, "payment_form.html", {"form": form, "error_message": str(e)})
+            except Exception as e:
+                return render(request, "payment_form.html", {"form": form, "error_message": f"An unexpected error occurred: {str(e)}"})
+
+    else:
+        form = PaymentForm()
+
+    return render(request, "payment_form.html", {"form": form})
+
+# Query STK Push status
+def query_stk_push(checkout_request_id):
+    print("Quering...")
+    try:
+        token = generate_access_token()
+        headers = {"Authorization": f"Bearer {token}", "Content-Type": "application/json"}
+
+        timestamp = datetime.now().strftime('%Y%m%d%H%M%S')
+        password = base64.b64encode(
+            (MPESA_SHORTCODE + MPESA_PASSKEY + timestamp).encode()
+        ).decode()
+
+        request_body = {
+            "BusinessShortCode": MPESA_SHORTCODE,
+            "Password": password,
+            "Timestamp": timestamp,
+            "CheckoutRequestID": checkout_request_id
+        }
+
+        response = requests.post(
+            f"{MPESA_BASE_URL}/mpesa/stkpushquery/v1/query",
+            json=request_body,
+            headers=headers,
+        )
+        print(response.json())
+        return response.json()
+
+    except requests.RequestException as e:
+        print(f"Error querying STK status: {str(e)}")
+        return {"error": str(e)}
+
+# View to query the STK status and return it to the frontend
+def stk_status_view(request):
+    if request.method == 'POST':
+        try:
+            # Parse the JSON body
+            data = json.loads(request.body)
+            checkout_request_id = data.get('checkout_request_id')
+            print("CheckoutRequestID:", checkout_request_id)
+
+            # Query the STK push status using your backend function
+            status = query_stk_push(checkout_request_id)
+
+            # Return the status as a JSON response
+            return JsonResponse({"status": status})
+        except json.JSONDecodeError:
+            return JsonResponse({"error": "Invalid JSON body"}, status=400)
+
+    return JsonResponse({"error": "Invalid request method"}, status=405)
+
+
+from django.db import transaction
+
+
+@csrf_exempt
+def payment_callback(request):
+    if request.method != "POST":
+        return HttpResponseBadRequest("Only POST requests are allowed")
+
+    try:
+        callback_data = json.loads(request.body)  # Parse the request body
+        result_code = callback_data["Body"]["stkCallback"]["ResultCode"]
+
+        if result_code == 0:
+            # Payment was successful
+            # Extract order details from the POST data
+            first_name = request.POST.get("first_name")
+            last_name = request.POST.get("last_name")
+            email = request.POST.get("email")
+            phone_number = request.POST.get("phone_number")
+            address_line1 = request.POST.get("address_line1")
+            zip_code = request.POST.get("zip_code")
+
+            # Retrieve the cart
+            user = request.user
+            cart = user.cart
+
+            # Create an order
+            order = Order.objects.create(
+                user=user,
+                total_amount=cart.total_price(),
+                status="Completed",  # Or Pending if you want to mark as pending until payment confirmation
+                payment_method="M-Pesa",  # Or another method if applicable
+            )
+
+            # Create order items based on cart items
+            for item in cart.items.all():
+                OrderItem.objects.create(
+                    order=order,
+                    product=item.product,
+                    quantity=item.quantity,
+                    total_price=item.product.new_price * item.quantity
+                )
+
+                # Update the product stock after purchase
+                product = item.product
+                if product.quantity >= item.quantity:
+                    product.quantity -= item.quantity
+                    product.save()
+                else:
+                    raise ValueError(f"Insufficient stock for product {product.item_name}")
+
+            # Clear the cart after successful order placement
+            cart.items.all().delete()
+
+            return JsonResponse({"ResultCode": 0, "ResultDesc": "Payment successful, order placed"})
+
+        # Payment failed
+        return JsonResponse({"ResultCode": result_code, "ResultDesc": "Payment failed"})
+
+    except (json.JSONDecodeError, KeyError) as e:
+        return HttpResponseBadRequest(f"Invalid request data: {str(e)}")
+    except ValueError as e:
+        return HttpResponseBadRequest(f"Error in payment callback: {str(e)}")
+
+
+
+
+
+
+
+@csrf_exempt
+def update_order_status(request):
+    data = json.loads(request.body)
+    checkout_request_id = data.get("checkout_request_id")
+    status = data.get("status")
+
+    # Update the order status
+    try:
+        order = Order.objects.get(checkout_request_id=checkout_request_id)
+        order.status = status
+        order.save()
+
+        # If payment is successful, clear the cart
+        if status == "paid":
+            cart = Cart.objects.get(user=request.user)
+            cart.items.clear()  # Clear cart after payment
+
+        return JsonResponse({"message": "Order status updated successfully"})
+    except Order.DoesNotExist:
+        return JsonResponse({"message": "Order not found"}, status=404)
+    except Exception as e:
+        return JsonResponse({"message": str(e)}, status=500)
+
+
+
+def create_order(request):
+    if request.method == 'POST':
+        # Get form data
+        data = json.loads(request.body)
+        first_name = data.get('first_name')
+        last_name = data.get('last_name')
+        email = data.get('email')
+        phone_number = data.get('phone_number')
+        address_line1 = data.get('address_line1')
+        zip_code = data.get('zip_code')
+
+        # Assuming you have a Cart model to get the current cart
+        cart = Cart.objects.get(user=request.user)
+
+        # Create order
+        order = Order.objects.create(
+            first_name=first_name,
+            last_name=last_name,
+            email=email,
+            phone_number=phone_number,
+            address_line1=address_line1,
+            zip_code=zip_code,
+            cart=cart,
+            total_price=cart.total_price,
+        )
+
+        # Update cart as "ordered"
+        cart.status = "ordered"
+        cart.save()
+
+        # Return a JSON response with the checkout_request_id
+        return JsonResponse({'success': True, 'checkout_request_id': order.id})
+
+    return JsonResponse({'success': False}, status=400)

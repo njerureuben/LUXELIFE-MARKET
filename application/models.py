@@ -44,9 +44,6 @@ class Product(models.Model):
     def __str__(self):
         return self.item_name
 
-
-
-
 # This is the model used to create the categories and the sub categories
 class Category(models.Model):
     name = models.CharField(max_length=255, unique=True)
@@ -91,7 +88,6 @@ def create_cart(sender, instance, created, **kwargs):
         Cart.objects.create(user=instance)
 
 
-
 # Creating Promo code
 class PromoCodeType(models.Model):
     name = models.CharField(max_length=255, unique=True)  # Unique name for each promo type
@@ -99,3 +95,42 @@ class PromoCodeType(models.Model):
 
     def __str__(self):
         return self.name
+
+
+# @receiver(post_save, sender=User)
+# def create_profile(sender, instance, created, **kwargs):
+#     if created:
+#         Profile.objects.create(user=instance)
+#
+# @receiver(post_save, sender=User)
+# def save_profile(sender, instance, **kwargs):
+#     instance.profile.save()
+#
+
+
+
+# Orders
+# Transaction Model
+class Transaction(models.Model):
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    checkout_id = models.CharField(max_length=100)
+    mpesa_code = models.CharField(max_length=100)
+    phone_number = models.CharField(max_length=15)
+    status = models.CharField(max_length=50)  # Success or Failed
+    created_at = models.DateTimeField(auto_now_add=True)
+
+# Order Model
+class Order(models.Model):
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    total_amount = models.DecimalField(max_digits=10, decimal_places=2)
+    status = models.CharField(max_length=50)  # Completed, Pending, etc.
+    payment_method = models.CharField(max_length=50)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+# OrderItem Model
+class OrderItem(models.Model):
+    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField()
+    total_price = models.DecimalField(max_digits=10, decimal_places=2)

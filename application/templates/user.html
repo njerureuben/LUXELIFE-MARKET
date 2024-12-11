@@ -1,204 +1,193 @@
+{% extends 'base.html' %}
 
-{% extends 'base.html'%}
+{% block content %}
+{% load static %}
 
-{% block content%}
 
-  {% load static %}
 
-  <link href="{% static 'style/userpage.css' %}" rel="stylesheet">
+<!--<link href="{% static 'admin/vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">-->
+
+
+
+<link href="{% static 'style/userpage.css' %}" rel="stylesheet">
+<style>
+    /* Toast container */
+    #toast-container {
+        position: fixed;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 1000;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    /* Toast message styling */
+    .toast {
+        display: inline-block;
+        padding: 10px 15px;
+        margin: 5px 0;
+        border-radius: 5px;
+        font-size: 14px;
+        font-family: Arial, Helvetica, sans-serif;
+        color: #fff;
+        opacity: 0;
+        animation: fadeInOut 5s forwards;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        text-align: center;
+    }
+
+    /* Success Toast with gradient */
+    .toast.success {
+        background: linear-gradient(45deg, #28a745, #95f098);
+    }
+
+    /* Error Toast with gradient */
+    .toast.error {
+        background: linear-gradient(45deg, #db5360, #ff0890);
+    }
+
+    /* Info Toast with gradient */
+    .toast.info {
+        background: linear-gradient(45deg, #17a2b8, #007bff);
+    }
+
+    /* Animation for Fade In and Out */
+    @keyframes fadeInOut {
+        0%, 100% {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+        10%, 90% {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
+
+
 
 <body>
+
+<!-- Toast Container -->
+    <div id="toast-container">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="toast {{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    </div>
+
 
   <main id="main" class="main">
 
     <section class="section profile">
       <div class="row">
+        <!-- Left Column: User Overview -->
         <div class="col-xl-4">
-
           <div class="card">
             <div class="card-body profile-card pt-4 d-flex flex-column align-items-center">
-
-              <img src="{% static 'images/profile-img.jpg' %}" alt="Profile" class="rounded-circle">
-              <h2>USER</h2>
-              <h3>admin.info@yahoo.com</h3>
+              {% if profile.image %}
+                <img src="{{ profile.image.url }}" alt="Profile" class="rounded-circle">
+              {% else %}
+                <img src="{% static 'images/default-profile.png' %}" alt="Default Profile" class="rounded-circle">
+              {% endif %}
+              <h2>{{ profile.fullname|default:"Not provided" }}</h2>
+              <h3>{{ request.user.email }}</h3>
               <div class="social-links mt-2">
                 <a href="#" class="twitter"><i class="bi bi-twitter"></i></a>
                 <a href="#" class="facebook"><i class="bi bi-facebook"></i></a>
                 <a href="#" class="instagram"><i class="bi bi-instagram"></i></a>
                 <a href="#" class="linkedin"><i class="bi bi-linkedin"></i></a>
               </div>
-
               <div class="logout mt-2">
                 <a href="{% url 'login' %}" class="btn btn-danger">Log Out</a>
               </div>
             </div>
           </div>
-
         </div>
 
+        <!-- Right Column: Tabs -->
         <div class="col-xl-8">
-
           <div class="card">
             <div class="card-body pt-3">
-              <!-- Bordered Tabs -->
+              <!-- Tabs Navigation -->
               <ul class="nav nav-tabs nav-tabs-bordered">
-
                 <li class="nav-item">
                   <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#profile-overview">Overview</button>
                 </li>
-
                 <li class="nav-item">
                   <button class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-edit">Edit Profile</button>
                 </li>
-
                 <li class="nav-item">
                   <button class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-change-password">Change Password</button>
                 </li>
-
               </ul>
-              <div class="tab-content pt-2">
 
+              <!-- Tabs Content -->
+              <div class="tab-content pt-2">
+                <!-- Overview Tab -->
                 <div class="tab-pane fade show active profile-overview" id="profile-overview">
                   <h5 class="card-title">Profile Details</h5>
 
                   <div class="row">
-                    <div class="col-lg-3 col-md-4 label ">Full Name</div>
-                    <div class="col-lg-9 col-md-8">SAMPLE FULLNAME</div>
+                    <div class="col-lg-3 col-md-4 label">Full Name</div>
+                    <div class="col-lg-9 col-md-8">{{ profile.fullname|default:"Not provided" }}</div>
                   </div>
 
                   <div class="row">
                     <div class="col-lg-3 col-md-4 label">Country</div>
-                    <div class="col-lg-9 col-md-8">SAMPLE COUNTRY</div>
+                    <div class="col-lg-9 col-md-8">{{ profile.country|default:"Not provided" }}</div>
                   </div>
 
                   <div class="row">
                     <div class="col-lg-3 col-md-4 label">Address</div>
-                    <div class="col-lg-9 col-md-8">SAMPLE ADDRESS</div>
+                    <div class="col-lg-9 col-md-8">{{ profile.address|default:"Not provided" }}</div>
                   </div>
 
                   <div class="row">
                     <div class="col-lg-3 col-md-4 label">Phone</div>
-                    <div class="col-lg-9 col-md-8">SAMPLE PHONE</div>
+                    <div class="col-lg-9 col-md-8">{{ profile.phone|default:"Not provided" }}</div>
                   </div>
 
                   <div class="row">
                     <div class="col-lg-3 col-md-4 label">Email</div>
-                    <div class="col-lg-9 col-md-8">SAMPLE EMAIL</div>
+                    <div class="col-lg-9 col-md-8">{{ request.user.email }}</div>
                   </div>
-
                 </div>
 
+                <!-- Edit Profile Tab -->
                 <div class="tab-pane fade profile-edit pt-3" id="profile-edit">
-
-                  <!-- Profile Edit Form -->
-                  <form>
-                    <div class="row mb-3">
-                      <label for="profileImage" class="col-md-4 col-lg-3 col-form-label">Profile Image</label>
-                      <div class="col-md-8 col-lg-9">
-                        <img src="{% static 'images/profile-img.jpg' %}" alt="Profile">
-                        <div class="pt-2">
-                          <a href="#" class="btn btn-primary btn-sm" title="Upload new profile image"><i class="fa fa-upload"></i></a>
-                          <a href="#" class="btn btn-danger btn-sm" title="Remove my profile image"><i class="fa fa-trash"></i></a>
-                        </div>
-                      </div>
-                    </div>
-
-<!--                        <input type="text" name="username" class="form-control" id="yourUsername" required>-->
-
-                    <div class="row mb-3">
-                      <label for="fullName" class="col-md-4 col-lg-3 col-form-label">Full Name</label>
-                      <div class="col-md-8 col-lg-9">
-                        <input name="fullName" type="text" class="form-control" id="fullName" value="SAMPE FULLNAME">
-                      </div>
-                    </div>
-
-                    <div class="row mb-3">
-                      <label for="fullName" class="col-md-4 col-lg-3 col-form-label">Username</label>
-                      <div class="col-md-8 col-lg-9">
-<!--                         <span class="input-group-text" id="inputGroupPrepend">@</span>-->
-                        <input name="username" type="text" class="form-control" id="username" value="SAMPLE_USERNAME">
-                      </div>
-                    </div>
-
-                    <div class="row mb-3">
-                      <label for="Country" class="col-md-4 col-lg-3 col-form-label">Country</label>
-                      <div class="col-md-8 col-lg-9">
-                        <input name="country" type="text" class="form-control" id="Country" value="SAMPLE COUNTRY">
-                      </div>
-                    </div>
-
-                    <div class="row mb-3">
-                      <label for="Address" class="col-md-4 col-lg-3 col-form-label">Address</label>
-                      <div class="col-md-8 col-lg-9">
-                        <input name="address" type="text" class="form-control" id="Address" value="SAMPLE ADDRESS">
-                      </div>
-                    </div>
-
-                    <div class="row mb-3">
-                      <label for="Phone" class="col-md-4 col-lg-3 col-form-label">Phone</label>
-                      <div class="col-md-8 col-lg-9">
-                        <input name="phone" type="text" class="form-control" id="Phone" value="SAMPLE PHONE">
-                      </div>
-                    </div>
-
-                    <div class="row mb-3">
-                      <label for="Email" class="col-md-4 col-lg-3 col-form-label">Email</label>
-                      <div class="col-md-8 col-lg-9">
-                        <input name="email" type="email" class="form-control" id="Email" value="SAMPLE EMAILS">
-                      </div>
-                    </div>
-
-
+                  <h5 class="card-title">Edit Profile</h5>
+                  <form method="post" enctype="multipart/form-data" action="{% url 'edit_profile' %}">
+                    {% csrf_token %}
+                    {{ profile_form.as_p }}
                     <div class="text-center">
                       <button type="submit" class="btn btn-primary">Save Changes</button>
                     </div>
-                  </form><!-- End Profile Edit Form -->
-
+                  </form>
                 </div>
 
-
+                <!-- Change Password Tab -->
                 <div class="tab-pane fade pt-3" id="profile-change-password">
-                  <!-- Change Password Form -->
-                  <form>
-
-                    <div class="row mb-3">
-                      <label for="currentPassword" class="col-md-4 col-lg-3 col-form-label">Current Password</label>
-                      <div class="col-md-8 col-lg-9">
-                        <input name="password" type="password" class="form-control" id="currentPassword">
-                      </div>
-                    </div>
-
-                    <div class="row mb-3">
-                      <label for="newPassword" class="col-md-4 col-lg-3 col-form-label">New Password</label>
-                      <div class="col-md-8 col-lg-9">
-                        <input name="newpassword" type="password" class="form-control" id="newPassword">
-                      </div>
-                    </div>
-
-                    <div class="row mb-3">
-                      <label for="renewPassword" class="col-md-4 col-lg-3 col-form-label">Re-enter New Password</label>
-                      <div class="col-md-8 col-lg-9">
-                        <input name="renewpassword" type="password" class="form-control" id="renewPassword">
-                      </div>
-                    </div>
-
+                  <h5 class="card-title">Change Password</h5>
+                  <form method="post" action="{% url 'change_password' %}">
+                    {% csrf_token %}
+                    {{ password_form.as_p }}
                     <div class="text-center">
-                      <button type="submit" class="btn btn-primary" >Change Password</button>
+                      <button type="submit" class="btn btn-primary">Change Password</button>
                     </div>
-                  </form><!-- End Change Password Form -->
-
+                  </form>
                 </div>
-
-              </div><!-- End Bordered Tabs -->
-
+              </div>
+              <!-- End Tabs Content -->
             </div>
           </div>
-
         </div>
       </div>
     </section>
-
-  </main><!-- End #main -->
+  </main>
 
   <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
 
@@ -215,5 +204,14 @@
 </body>
 
 
-
+ <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                const toasts = document.querySelectorAll('.toast');
+                toasts.forEach((toast) => {
+                    setTimeout(() => {
+                        toast.style.display = 'none'; // Remove the toast after animation
+                    }, 5000); // Match the duration in the CSS animation (5 seconds)
+                });
+            });
+ </script>
 {% endblock %}
