@@ -1,6 +1,6 @@
-{% extends 'base.html'%}
+{% extends 'base.html' %}
 {% load static %}
-{% block content%}
+{% block content %}
 
 <body>
 
@@ -17,6 +17,29 @@
     </div>
     <!-- Page Header End -->
 
+    <!-- Toast Messages -->
+    <div id="toast-container" style="position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 1050;">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="toast {{ message.tags }}"
+                    style="
+                        display: block;
+                        padding: 15px;
+                        min-width: 300px;
+                        max-width: 500px;
+                        background-color:
+                        {% if message.tags == 'success' %} #d4edda {% elif message.tags == 'error' %} #f8d7da {% else %} #f8f9fa {% endif %};
+                        color:
+                        {% if message.tags == 'success' %} #155724 {% elif message.tags == 'error' %} #721c24 {% else %} #212529 {% endif %};
+                        border-radius: 5px;
+                        text-align: center;
+                        margin-bottom: 10px;
+                        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
 
     <!-- Contact Start -->
     <div class="container-fluid pt-5">
@@ -26,34 +49,35 @@
         <div class="row px-xl-5">
             <div class="col-lg-7 mb-5">
                 <div class="contact-form">
-                    <div id="success"></div>
-                    <form name="sentMessage" id="contactForm" novalidate="novalidate">
-                        <div class="control-group">
-                            <input type="text" class="form-control" id="name" placeholder="Your Name"
-                                required="required" data-validation-required-message="Please enter your name" />
-                            <p class="help-block text-danger"></p>
-                        </div>
-                        <div class="control-group">
-                            <input type="email" class="form-control" id="email" placeholder="Your Email"
-                                required="required" data-validation-required-message="Please enter your email" />
-                            <p class="help-block text-danger"></p>
-                        </div>
-                        <div class="control-group">
-                            <input type="text" class="form-control" id="subject" placeholder="Subject"
-                                required="required" data-validation-required-message="Please enter a subject" />
-                            <p class="help-block text-danger"></p>
-                        </div>
-                        <div class="control-group">
-                            <textarea class="form-control" rows="6" id="message" placeholder="Message"
-                                required="required"
-                                data-validation-required-message="Please enter your message"></textarea>
-                            <p class="help-block text-danger"></p>
-                        </div>
-                        <div>
-                            <button class="btn btn-primary py-2 px-4" type="submit" id="sendMessageButton">Send
-                                Message</button>
-                        </div>
-                    </form>
+                   <form method="post" novalidate enctype="multipart/form-data">
+    {% csrf_token %}
+    {% for field in form %}
+        <div class="form-group">
+            <!-- Label with asterisk for required fields -->
+            <label for="{{ field.id_for_label }}">
+                {{ field.label }}{% if field.field.required %}<span style="color: red;"> *</span>{% endif %}
+            </label>
+
+            <!-- Field widget -->
+            {{ field }}
+
+            <!-- Validation error messages -->
+            {% if field.errors %}
+                <div class="text-danger" style="font-size: 0.9rem;">
+                    {% for error in field.errors %}
+                        {{ error }}
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+    {% endfor %}
+
+    <!-- Submit button -->
+    <div>
+        <button class="btn btn-primary py-2 px-4" type="submit">Send Message</button>
+    </div>
+</form>
+
                 </div>
             </div>
             <div class="col-lg-5 mb-5">
@@ -77,5 +101,21 @@
     <!-- Contact End -->
 
 </body>
+
+<script>
+    // Wait for the DOM to load
+    document.addEventListener("DOMContentLoaded", function () {
+        // Select all toast messages
+        const toasts = document.querySelectorAll("#toast-container .toast");
+        toasts.forEach((toast) => {
+            // Auto-remove the toast after 5 seconds
+            setTimeout(() => {
+                toast.style.transition = "opacity 0.5s ease-in-out";
+                toast.style.opacity = "0"; // Fade out
+                setTimeout(() => toast.remove(), 500); // Remove after fade-out
+            }, 5000);
+        });
+    });
+</script>
 
 {% endblock %}

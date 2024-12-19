@@ -1,0 +1,248 @@
+ {% extends 'admin.html'%}
+{% load static %}
+{% block admindashboard%}
+
+
+{% if messages %}
+        <div class="toast-container position-fixed top-0 start-50 translate-middle-x p-3" style="z-index: 1055;">
+            {% for message in messages %}
+                <div class="toast align-items-center border-0 show"
+                    role="alert" aria-live="assertive" aria-atomic="true"
+                    style="background: {% if message.tags == 'error' %}linear-gradient(45deg, #ff4e50, #f9d423);{% else %}linear-gradient(45deg, #4caf50, #8bc34a);{% endif %}; color: white;">
+                    <div class="d-flex">
+                        <div class="toast-body">
+                            {{ message }}
+                        </div>
+<!--                        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>-->
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+ {% endif %}
+
+<div class="container-fluid pt-4 px-4">
+                <div class="row g-4">
+                    <div class="col-12">
+                        <div class="bg-light rounded h-100 p-4">
+
+<!--                            Heading-->
+                              <div class="d-flex justify-content-between align-items-center mb-3">
+            <!-- Heading -->
+            <h6 class="mb-0" style="font-weight: bold; color: #ffbf00;">Create Admin</h6>
+
+            <!-- Search Field -->
+<!--            <div class="input-group" style="max-width: 300px;">-->
+<!--                <input id="tableSearch" type="text" class="form-control" placeholder="Search products..." aria-label="Search">-->
+<!--&lt;!&ndash;                <button class="btn btn-outline-secondary search-button" type="button">&ndash;&gt;-->
+<!--&lt;!&ndash;                    <i class="bi bi-search"></i>&ndash;&gt;-->
+<!--&lt;!&ndash;                </button>&ndash;&gt;-->
+<!--            </div>-->
+
+
+        </div>
+
+
+                            <!-- Breadcrumb -->
+        <nav aria-label="breadcrumb" class="mb-3">
+            <ol class="breadcrumb">
+                  <li class="breadcrumb-item"><a href="#" style="color: #ffbf00">Users</a></li>
+                                    <li class="breadcrumb-item active" aria-current="page">Create Admin</li>
+            </ol>
+        </nav>
+
+
+<!--     The body content after the header Starts here-->
+          <!-- Form -->
+              <form id="adminForm" class="row g-3 needs-validation" novalidate method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="row">
+                  <!-- Left Column -->
+                  <div class="col-md-6">
+                    <!-- Fullname -->
+                    <div class="mb-3">
+                      <label  class="form-label">Admin Name</label>
+                      {{ form.fullname }}
+                      {% if form.fullname.errors %}
+                          <div class="invalid-feedback d-block">
+                              {{ form.fullname.errors.0 }}
+                          </div>
+                      {% endif %}
+                    </div>
+
+                    <!-- Username -->
+                    <div class="mb-3">
+                      <label  class="form-label">Admin Username</label>
+                      <div class="input-group has-validation">
+                        <span class="input-group-text" id="inputGroupPrepend">@</span>
+                        {{form.username}}
+                        {% if form.username.errors %}
+                        <div class="invalid-feedback d-block">
+                          {{ form.username.errors.0 }}
+                        </div>
+                      {% endif %}
+                        <div class="invalid-feedback">Please choose a username.</div>
+                      </div>
+                    </div>
+
+                    <!-- Email -->
+                    <div class="mb-3">
+                      <label  class="form-label">Admin Email</label>
+                      {{ form.email }}
+                      {% if form.email.errors %}
+                          <div class="invalid-feedback d-block">
+                              {{ form.email.errors.0 }}
+                          </div>
+                      {% endif %}
+                    </div>
+
+                    <!-- Phone -->
+                    <div class="mb-3">
+                      <label  class="form-label">Admin Phone</label>
+                      {{ form.phone }}
+                      {% if form.phone.errors %}
+                          <div class="invalid-feedback d-block">
+                              {{ form.phone.errors.0 }}
+                          </div>
+                      {% endif %}
+                    </div>
+
+                    <!-- Profile Image -->
+                    <div class="mb-3">
+                      <label  class="form-label">Upload Your Profile</label>
+                      {{ form.image }}
+                      {% if form.image.errors %}
+                          <div class="invalid-feedback d-block">
+                              {{ form.image.errors.0 }}
+                          </div>
+                      {% endif %}
+                    </div>
+                  </div>
+
+                  <!-- Right Column -->
+                  <div class="col-md-6">
+                    <!-- Country -->
+                    <div class="mb-3">
+                      <label  class="form-label">Admin Country</label>
+                      {{ form.country }}
+                      {% if form.country.errors %}
+                          <div class="invalid-feedback d-block">
+                              {{ form.country.errors.0 }}
+                          </div>
+                      {% endif %}
+                    </div>
+
+                    <!-- Address -->
+                    <div class="mb-3">
+                      <label  class="form-label">Admin Address</label>
+                      {{ form.address }}
+                      {% if form.address.errors %}
+                          <div class="invalid-feedback d-block">
+                              {{ form.address.errors.0 }}
+                          </div>
+                      {% endif %}
+                    </div>
+
+                    <!-- Password -->
+                    <div class="mb-3">
+                      <label  class="form-label">Password</label>
+                      {{ form.password1 }}
+                      {% if form.password1.errors %}
+                          <div class="invalid-feedback d-block">
+                              {{ form.password1.errors.0 }}
+                          </div>
+                      {% endif %}
+                    </div>
+
+                    <!-- Confirm Password -->
+                    <div class="mb-3">
+                      <label  class="form-label">Re-enter Password</label>
+                      {{ form.password2 }}
+                      {% if form.password2.errors %}
+                          <div class="invalid-feedback d-block">
+                              {{ form.password2.errors.0 }}
+                          </div>
+                      {% endif %}
+                    </div>
+                  </div>
+
+                 <!-- Submit Button -->
+                    <div class="text-left mt-4">
+                        <button id="validateButton" class="btn btn-primary w-50" type="button">
+                            Create Admin
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+
+              </form>
+              <!-- End of Form -->
+
+
+<!-- The body content after the header Ends here-->
+                        </div>
+                    </div>
+                </div>
+
+<!--    Confirm Update Modal-->
+     <div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmationModalLabel" style="color: #000000; font-weight: bold;">Confirmation Request</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="color: #ffbf00;"></button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to create this admin?
+            </div>
+            <div class="modal-footer">
+                <!-- Close Modal -->
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <!-- Submit Form -->
+                <button type="button" class="btn btn-primary" id="confirmSubmit">Yes, Create Admin</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+</div>
+
+
+
+
+<script>
+    document.getElementById('validateButton').addEventListener('click', function () {
+        // Get the form
+        const form = document.getElementById('adminForm');
+
+        // Check form validity
+        if (!form.checkValidity()) {
+            // Trigger HTML5 validation messages
+            form.classList.add('was-validated');
+        } else {
+            // If form is valid, show the confirmation modal
+            const confirmationModal = new bootstrap.Modal(document.getElementById('confirmationModal'));
+            confirmationModal.show();
+        }
+    });
+
+    // Handle form submission when confirmation button is clicked
+    document.getElementById('confirmSubmit').addEventListener('click', function () {
+        // Submit the form programmatically
+        document.getElementById('adminForm').submit();
+    });
+
+
+    // This is the counter that handles the message counters
+      document.addEventListener('DOMContentLoaded', () => {
+                const toasts = document.querySelectorAll('.toast');
+                toasts.forEach((toast) => {
+                    setTimeout(() => {
+                        toast.style.display = 'none'; // Remove the toast after animation
+                    }, 5000); // Match the duration in the CSS animation (5 seconds)
+                });
+            });
+</script>
+
+ {% endblock %}
+

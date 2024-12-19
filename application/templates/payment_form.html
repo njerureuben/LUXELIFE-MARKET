@@ -41,7 +41,7 @@
       {% endif %}
 
       <!-- Payment Form -->
-      <form method="POST" class="needs-validation" novalidate onsubmit="handleFormSubmit(event)">
+      <form method="POST" class="needs-validation" novalidate onsubmit="handleFormSubmit(event)" enctype="multipart/form-data">
         {% csrf_token %}
 
         <!-- Phone Number Field -->

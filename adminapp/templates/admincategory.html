@@ -1,0 +1,171 @@
+{% extends 'admin.html' %}
+{% load static %}
+{% block admindashboard %}
+
+<!-- Toast Messages -->
+{% if messages %}
+    <div class="toast-container position-fixed top-0 start-50 translate-middle-x p-3" style="z-index: 1055;">
+        {% for message in messages %}
+            <div class="toast align-items-center border-0 show"
+                role="alert" aria-live="assertive" aria-atomic="true"
+                style="background: {% if message.tags == 'error' %}linear-gradient(45deg, #ff4e50, #f9d423);{% else %}linear-gradient(45deg, #4caf50, #8bc34a);{% endif %}; color: white;">
+                <div class="d-flex">
+                    <div class="toast-body">
+                        {{ message }}
+                    </div>
+<!--                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>-->
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
+
+<!-- Main Container -->
+<div class="container-fluid pt-4 px-4">
+    <div class="row g-4">
+        <div class="col-12">
+            <div class="bg-light rounded h-100 p-4">
+
+                <!-- Header -->
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h6 class="mb-0" style="font-weight: bold; color: #ffbf00;">Create Categories</h6>
+                </div>
+
+                <!-- Breadcrumb -->
+                <nav aria-label="breadcrumb" class="mb-3">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="#" style="color: #ffbf00">Products</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Create Categories</li>
+                    </ol>
+                </nav>
+
+                <!-- Form -->
+                <form method="POST" enctype="multipart/form-data" id="categoryForm">
+                    {% csrf_token %}
+                    <div class="col-6">
+                        <!-- Category Name -->
+                        <div class="mb-3">
+                            <label class="form-label">Category Name</label>
+                            {{ form.category_name }}
+                             {% if form.category_name.errors %}
+                                    <div class="invalid-feedback d-block">{{ form.category_name.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Subcategories Checkbox -->
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" id="containsSubCategory" class="form-check-input" name="contains_subcategories" {% if form.contains_subcategories.value %}checked{% endif %}>
+                            <label class="form-check-label" for="containsSubCategory">Add Sub Categories?</label>
+                        </div>
+
+                        <!-- Subcategories Section -->
+                        <div id="subcategoriesContainer" style="display: {% if form.contains_subcategories.value %}block{% else %}none{% endif %};">
+                            <h5>Subcategories</h5>
+                            <div class="row g-2" id="subcategoryFields">
+                                <!-- Subcategory inputs will be added dynamically here -->
+                            </div>
+                            <button type="button" id="addSubcategory" class="btn btn-sm register-btn">
+                                <i class="bi bi-plus-circle"></i>
+                            </button>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="mt-4">
+                            <button type="button" class="btn btn-primary" id="openConfirmationModal">Create Category</button>
+                        </div>
+                    </div>
+                </form>
+
+                <!-- Confirmation Modal -->
+                <div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="confirmationModalLabel" style="color: #000000; font-weight: bold;">
+                                    Confirm Action
+                                </h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                Are you sure you want to create this category?
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                <button type="button" class="btn btn-primary" id="confirmSubmit">Yes, Create</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript -->
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const containsSubCategory = document.getElementById('containsSubCategory');
+    const subcategoriesContainer = document.getElementById('subcategoriesContainer');
+    const addSubcategoryButton = document.getElementById('addSubcategory');
+    const subcategoryFields = document.getElementById('subcategoryFields');
+
+    // Toggle Subcategories Section Visibility
+    containsSubCategory.addEventListener('change', () => {
+        subcategoriesContainer.style.display = containsSubCategory.checked ? 'block' : 'none';
+    });
+
+    // Add Subcategory Fields Dynamically
+    addSubcategoryButton.addEventListener('click', () => {
+        const colDiv = document.createElement('div');
+        colDiv.className = 'col-md-4 position-relative';
+
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.name = 'subcategories[]';
+        input.className = 'form-control mb-2';
+        input.placeholder = 'Enter subcategory name';
+
+        const removeBtn = document.createElement('button');
+        removeBtn.type = 'button';
+        removeBtn.className = 'btn btn-sm btn-danger position-absolute top-0 end-0';
+        removeBtn.innerHTML = '<i class="bi bi-dash-circle"></i>';
+        // removeBtn.style.transform = 'translate(50%, -50%)';
+        removeBtn.addEventListener('click', () => {
+            colDiv.remove();
+        });
+
+        colDiv.appendChild(input);
+        colDiv.appendChild(removeBtn);
+        subcategoryFields.appendChild(colDiv);
+    });
+
+    // Confirmation Modal Logic
+    const openModalBtn = document.getElementById('openConfirmationModal');
+    const confirmSubmitBtn = document.getElementById('confirmSubmit');
+    const confirmationModal = new bootstrap.Modal(document.getElementById('confirmationModal'));
+    const form = document.getElementById('categoryForm');
+
+    // Open Modal Before Submission
+    openModalBtn.addEventListener('click', (e) => {
+        e.preventDefault(); // Prevent default submit behavior
+        confirmationModal.show(); // Show the modal
+    });
+
+    // Submit Form on Confirmation
+    confirmSubmitBtn.addEventListener('click', () => {
+        form.submit(); // Submit the form
+    });
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+        const toasts = document.querySelectorAll('.toast');
+        toasts.forEach((toast) => {
+            setTimeout(() => {
+                toast.style.display = 'none'; // Remove the toast after animation
+            }, 5000); // Match the duration in the CSS animation (5 seconds)
+        });
+    });
+</script>
+
+{% endblock %}

@@ -15,7 +15,7 @@ class Profile(models.Model):
     phone = models.CharField(max_length=15, blank=True, null=True)
     address = models.CharField(max_length=255, blank=True, null=True)
     country = models.CharField(max_length=255, blank=True, null=True)
-    image = models.ImageField(upload_to='profile_images/', default='profile_images/default.jpg', blank=True)
+    image = models.ImageField(upload_to='profile_images/', default='profile_images/placeholder.png', blank=True)
 
     def __str__(self):
         return self.user.username
@@ -134,3 +134,17 @@ class OrderItem(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField()
     total_price = models.DecimalField(max_digits=10, decimal_places=2)
+
+
+#This will represent the model used used for the contact .html
+class Contact(models.Model):
+    name = models.CharField(max_length=100)
+    email = models.EmailField()
+    subject = models.CharField(max_length=150)
+    message = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    is_read = models.BooleanField(default=False)  # To track if the message has been read
+    response = models.TextField(blank=True, null=True)  # To store admin responses
+
+    def __str__(self):
+        return f"{self.name} - {self.subject}"

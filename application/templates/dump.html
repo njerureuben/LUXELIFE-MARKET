@@ -1,0 +1,196 @@
+ {% extends 'admin.html'%}
+{% load static %}
+{% block admindashboard%}
+
+
+ <!-- Toast Container -->
+    {% if messages %}
+        <div class="toast-container position-fixed top-0 start-50 translate-middle-x p-3" style="z-index: 1055;">
+            {% for message in messages %}
+                <div class="toast align-items-center border-0 show"
+                    role="alert" aria-live="assertive" aria-atomic="true"
+                    style="background: {% if message.tags == 'error' %}linear-gradient(45deg, #ff4e50, #f9d423);{% else %}linear-gradient(45deg, #4caf50, #8bc34a);{% endif %}; color: white;">
+                    <div class="d-flex">
+                        <div class="toast-body">
+                            {{ message }}
+                        </div>
+                        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+            <!-- Form Start -->
+            <div class="container-fluid pt-4 px-4">
+                            <h5 class="mb-4" style="font-weight: bold; color: #ffbf00;">Create Product</h5>
+                             <nav aria-label="breadcrumb" class="mb-3">
+                                <ol class="breadcrumb">
+                                    <li class="breadcrumb-item"><a href="#" style="color: #ffbf00">Products</a></li>
+                                    <li class="breadcrumb-item active" aria-current="page">Products Data</li>
+                                </ol>
+                             </nav>
+                <div class="row g-4">
+                    <div class="col-sm-12 col-xl-9">
+                        <div class="bg-light rounded h-100 p-4" style="background: white">
+
+
+                                  <form id="productForm" class="row g-3 needs-validation" novalidate method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="row">
+        <!-- Left Column -->
+        <div class="col-md-6">
+            <div class="mb-3">
+                <label class="form-label">Item Name</label>
+                {{ form.item_name }}
+                {% if form.item_name.errors %}
+                    <div class="invalid-feedback d-block">{{ form.item_name.errors.0 }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-floating mb-3">
+                {{ form.category_or_subcategory }}
+                <label>Select Category</label>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Old Price</label>
+                {{ form.old_price }}
+                {% if form.old_price.errors %}
+                    <div class="invalid-feedback d-block">{{ form.old_price.errors.0 }}</div>
+                {% endif %}
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">New Price</label>
+                {{ form.new_price }}
+                {% if form.new_price.errors %}
+                    <div class="invalid-feedback d-block">{{ form.new_price.errors.0 }}</div>
+                {% endif %}
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Quantity</label>
+                {{ form.quantity }}
+                {% if form.quantity.errors %}
+                    <div class="invalid-feedback d-block">{{ form.quantity.errors.0 }}</div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Right Column -->
+        <div class="col-md-6">
+            <div class="mb-3">
+                <label class="form-label">Product Image</label>
+                {{ form.image }}
+                {% if form.image.errors %}
+                    <div class="invalid-feedback d-block">{{ form.image.errors.0 }}</div>
+                {% endif %}
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Color</label>
+                {{ form.color }}
+                {% if form.color.errors %}
+                    <div class="invalid-feedback d-block">{{ form.color.errors.0 }}</div>
+                {% endif %}
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Size</label>
+                {{ form.size }}
+                {% if form.size.errors %}
+                    <div class="invalid-feedback d-block">{{ form.size.errors.0 }}</div>
+                {% endif %}
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Item Description</label>
+                {{ form.item_description }}
+                {% if form.item_description.errors %}
+                    <div class="invalid-feedback d-block">{{ form.item_description.errors.0 }}</div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="col-md-4">
+            <button id="validateButton" class="register-btn w-100" type="button">
+                Add Product
+            </button>
+        </div>
+    </div>
+</form>
+
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+            <!-- Form End -->
+
+
+<!-- Pop up starts-->
+
+ <div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmationModalLabel" style="color: #000000; font-weight: bold;">Confirmation Request</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="color: #ffbf00;"></button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to create this product?
+            </div>
+            <div class="modal-footer">
+                <!-- Close Modal -->
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <!-- Submit Form -->
+                <button type="button" class="btn btn-primary" id="confirmSubmit">Yes, Create Product</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Pop ups eds-->
+
+
+<!-- Scripts-->
+<script>
+    document.getElementById('validateButton').addEventListener('click', function () {
+        // Get the form
+        const form = document.getElementById('productForm');
+
+        // Check form validity
+        if (!form.checkValidity()) {
+            // Trigger HTML5 validation messages
+            form.classList.add('was-validated');
+        } else {
+            // If form is valid, show the confirmation modal
+            const confirmationModal = new bootstrap.Modal(document.getElementById('confirmationModal'));
+            confirmationModal.show();
+        }
+    });
+
+    // Handle form submission when confirmation button is clicked
+    document.getElementById('confirmSubmit').addEventListener('click', function () {
+        // Submit the form programmatically
+        document.getElementById('productForm').submit();
+    });
+
+
+    // This is the counter that handles the message counters
+      document.addEventListener('DOMContentLoaded', () => {
+                const toasts = document.querySelectorAll('.toast');
+                toasts.forEach((toast) => {
+                    setTimeout(() => {
+                        toast.style.display = 'none'; // Remove the toast after animation
+                    }, 5000); // Match the duration in the CSS animation (5 seconds)
+                });
+            });
+</script>
+
+ {% endblock %}
+

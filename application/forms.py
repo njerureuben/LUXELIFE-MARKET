@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from .models import Profile, Product, Category, Subcategory, PromoCodeType
+from .models import Profile, Product, Category, Subcategory, PromoCodeType, Contact
 from django.contrib.auth.forms import PasswordChangeForm
 
 
@@ -136,7 +136,7 @@ class ProductForm(forms.ModelForm):
     category_or_subcategory = forms.ChoiceField(
         required=True,
         widget=forms.Select(attrs={
-            'class': 'form-control'
+            'class': 'form-select'
         })
     )
     color = forms.CharField(
@@ -429,3 +429,94 @@ class PaymentForm(forms.Form):
             }
         )
     )
+
+# Contact FOrm
+class ContactForm(forms.ModelForm):
+    class Meta:
+        model = Contact
+        fields = ['name', 'email', 'subject', 'message']
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Your Name'}),
+            'email': forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Your Email'}),
+            'subject': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Subject'}),
+            'message': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Message', 'rows': 6}),
+        }
+
+
+from django.utils.safestring import mark_safe
+
+class AdminUpdateForm(forms.ModelForm):
+    fullname = forms.CharField(
+        required=True,
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Enter your full name'
+        })
+    )
+    phone = forms.CharField(
+        required=True,
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Enter your phone number'
+        })
+    )
+    address = forms.CharField(
+        required=True,
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Enter your address'
+        })
+    )
+    country = forms.CharField(
+        required=True,
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Enter your country'
+        })
+    )
+    image = forms.ImageField(
+        required=False,
+        widget=forms.ClearableFileInput(attrs={
+            'class': 'form-control'
+        })
+    )
+    username = forms.CharField(
+        required=False,
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'readonly': 'readonly',
+            'placeholder': 'Enter your username'
+        })
+    )
+    email = forms.EmailField(
+        required=False,
+        widget=forms.EmailInput(attrs={
+            'class': 'form-control',
+            'readonly': 'readonly',
+            'placeholder': 'Enter your email address'
+        })
+    )
+
+    class Meta:
+        model = Profile
+        fields = ['fullname', 'phone', 'address', 'country', 'image']
+
+    def __init__(self, *args, **kwargs):
+        user_instance = kwargs.pop('user_instance', None)
+        super().__init__(*args, **kwargs)
+        if user_instance:
+            self.fields['fullname'].initial = user_instance.profile.fullname
+            self.fields['phone'].initial = user_instance.profile.phone
+            self.fields['address'].initial = user_instance.profile.address
+            self.fields['country'].initial = user_instance.profile.country
+            self.fields['username'].initial = user_instance.username
+            self.fields['email'].initial = user_instance.email
+
+            # # Handle the image field
+            # if user_instance.profile.image:
+            #     self.fields['image'].help_text = mark_safe(
+            #         f'<img src="{user_instance.profile.image.url}" alt="Profile Image" style="max-height: 100px;"/>'
+            #     )
+
+
+

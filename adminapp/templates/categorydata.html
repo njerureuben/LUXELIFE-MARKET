@@ -1,0 +1,159 @@
+{% extends 'admin.html'%}
+{% load static %}
+{% block admindashboard%}
+{% if messages %}
+    <div class="toast-container position-fixed top-0 start-50 translate-middle-x p-3" style="z-index: 1055;">
+        {% for message in messages %}
+            <div class="toast align-items-center border-0 show"
+                role="alert" aria-live="assertive" aria-atomic="true"
+                style="background: {% if message.tags == 'error' %}linear-gradient(45deg, #ff4e50, #f9d423);{% else %}linear-gradient(45deg, #4caf50, #8bc34a);{% endif %}; color: white;">
+                <div class="d-flex">
+                    <div class="toast-body">
+                        {{ message }}
+                    </div>
+<!--                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>-->
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
+
+  <!-- Table Start -->
+<div class="container-fluid pt-4 px-4">
+    <div class="row g-4">
+
+
+<div class="col-12">
+    <div class="bg-light rounded h-100 p-4">
+        <!-- Heading and Search Field -->
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <!-- Heading -->
+            <h5 class="mb-0" style="font-weight: bold; color: #ffbf00;">Categories Data</h5>
+
+            <!-- Search Field -->
+            <div class="input-group" style="max-width: 300px;">
+                <input id="tableSearch" type="text" class="form-control" placeholder="Search products..." aria-label="Search">
+<!--                <button class="btn btn-outline-secondary search-button" type="button">-->
+<!--                    <i class="bi bi-search"></i>-->
+<!--                </button>-->
+            </div>
+        </div>
+
+        <!-- Breadcrumb -->
+        <nav aria-label="breadcrumb" class="mb-3">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#">Categories</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Categories Data</li>
+            </ol>
+        </nav>
+
+        <!-- Table Content -->
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                      <th style="width: 50px;">#</th>
+                      <th>NAME</th>
+                      <th>HAS SUBCATEGORIES</th>
+                      <th>SUBCATEGORIES</th>
+                      <th></th> <!-- Update Button -->
+                      <th></th> <!-- Delete Button -->
+                    </tr>
+
+                </thead>
+               <tbody class="table-body">
+                                    {% for category in categories %}
+                                    <tr class="table-row">
+                                        <td>{{ forloop.counter }}</td> <!-- Use the forloop.counter variable -->
+                                        <td>{{ category.name }}</td>
+                                        <td>{{ category.contains_subcategories|yesno:"Yes,No" }}</td>
+                                        <td>
+                                            {% if category.subcategories.count > 0 %}
+                                                <ul>
+                                                    {% for subcategory in category.subcategories.all %}
+                                                        <li>{{ subcategory.name }}</li>
+                                                    {% endfor %}
+                                                </ul>
+                                            {% else %}
+                                                No subcategories
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <a href="{% url 'adminupdatecategory' category.id %}" class="btn btn-success btn-update bi bi-pencil" title="Update"></a>
+                                        </td>
+
+
+                                        <td>
+                                        <!-- Button to trigger modal -->
+                                        <a href="#" class="btn btn-danger btn-delete bi bi-trash" data-bs-toggle="modal" data-bs-target="#verticalycentered" onclick="setCategoryId({{ category.id }})" title="Delete">
+
+                                        </a>
+                                        </td>
+
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+                </div>
+            </div>
+            <!-- Table End -->
+
+
+  <!-- Modal for Deletion Confirmation -->
+<div class="modal fade" id="verticalycentered" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" style="color: #000000; font-weight: bold;">Confirmation Request</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete the selected category?
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <!-- This link will now have the dynamic ID set -->
+                <a href="#" id="delete-button" class="btn btn-danger">Delete</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    function setCategoryId(categoryId) {
+        // Create the URL by replacing the placeholder with the actual categoryId
+        var url = "{% url 'delete' 0 %}".replace('0', categoryId);
+
+        // Set the delete button's href with the correct URL
+        var deleteButton = document.getElementById('delete-button');
+        deleteButton.href = url;
+    }
+
+            document.addEventListener('DOMContentLoaded', () => {
+                const toasts = document.querySelectorAll('.toast');
+                toasts.forEach((toast) => {
+                    setTimeout(() => {
+                        toast.style.display = 'none'; // Remove the toast after animation
+                    }, 5000); // Match the duration in the CSS animation (5 seconds)
+                });
+            });
+
+    document.getElementById('tableSearch').addEventListener('keyup', function () {
+        let filter = this.value.toLowerCase();
+        let rows = document.querySelectorAll('#adminTable tbody .table-row');
+
+        rows.forEach(row => {
+            let textContent = row.textContent.toLowerCase();
+            row.style.display = textContent.includes(filter) ? '' : 'none';
+        });
+    });
+</script>
+
+{% endblock %}

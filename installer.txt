@@ -1,0 +1,7 @@
+pip install whitenoise -- The alternative for the Ginx
+pip install gunicorn - Http server for running the webservers
+
+-- to check on the requirements
+pip freeze
+
+Whitenoise is a Python package used to serve static files directly from your Django application. It’s particularly useful for simplifying deployments by eliminating the need for an external web server like Nginx or Apache to serve static files

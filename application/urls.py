@@ -12,7 +12,7 @@ urlpatterns = [
 
     # General User Routes
     path('index/', views.index, name='index'),
-    path('contact/', views.contact, name='contact'),
+    path('contact/', views.contact_view, name='contact'),
 
 
     path('cart/', views.cart, name='cart'),
@@ -72,7 +72,16 @@ urlpatterns = [
     path('payment/', views.payment_view, name='payment'),
     path('callback/', views.payment_callback, name='payment_callback'),
     path('stk-status/', views.stk_status_view, name='stk_status'),
-path('create_order/', views.create_order, name='create_order'),
+    path('create_order/', views.create_order, name='create_order'),
+    path('error_404/', views.custom_404_view, name='error_404'),
+
+
+    #Messaging module
+    # path('admin/messages/', views.admin_messages, name='customer_messages'),
+    path('admin/messages/', views.admin_messages, name='admin_messages'),
+    path('admin/messages/<int:message_id>/read/', views.mark_as_read, name='mark_as_read'),
+    path('admin/messages/<int:message_id>/delete/', views.delete_message, name='delete_message'),
+    path('admin/messages/<int:message_id>/respond/', views.respond_to_message, name='respond_to_message'),
 
 ]
 

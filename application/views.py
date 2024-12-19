@@ -4,18 +4,15 @@ from datetime import datetime
 import os
 import re
 from random import sample
-
 import requests
-from django.db import transaction
 from django.db.models import Count
 from django.http import JsonResponse, HttpResponseBadRequest
 from django.views.decorators.csrf import csrf_exempt
-
 from .forms import RegistrationForm, ProductForm, AdminRegistrationForm, AdminCustomerRegistrationForm, CategoryForm, \
-    PaymentForm
+    PaymentForm, ContactForm
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
-from .models import Cart, CartItem, Order, OrderItem, Transaction
+from .models import Cart, CartItem, Order, OrderItem, Transaction, Contact
 from .models import Category, Subcategory, Product
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.shortcuts import render, redirect, get_object_or_404
@@ -43,7 +40,7 @@ MPESA_BASE_URL = os.getenv("MPESA_BASE_URL")
 def index(request):
     grouped_data = []
 
-    # Query all products
+    # Query all teA
     products = Product.objects.all()
 
     # Group products by subcategory (if exists)
@@ -82,17 +79,26 @@ def index(request):
 
 
 
-def admin_data(request):
-    return render(request, 'admin_data.html')
 
-def customer_data(request):
-    return render(request, 'customer_data.html')
+
+# def customer_data(request):
+#     return render(request, 'customer_data.html')
 
 def admin_category(request):
     return render(request, 'admin_category.html')
 
-def contact(request):
-    return render(request, 'contact.html',{'current_page':'contact'})
+def contact_view(request):
+    if request.method == 'POST':
+        form = ContactForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Your message has been sent successfully!')
+            return redirect('contact')  # Redirect to prevent form resubmission
+        else:
+            messages.error(request, 'There was an error in your submission. Please correct it below.')
+    else:
+        form = ContactForm()
+    return render(request, 'contact.html', {'form': form})
 
 @login_required
 def cart(request):
@@ -198,7 +204,7 @@ def login_user(request):
                 return redirect(next_url)
 
             # Redirect based on user role if no 'next' parameter
-            return redirect('products' if user.is_staff else 'index')
+            return redirect('admin_dashboard' if user.is_staff else 'index')
         else:
             error_message = 'Invalid username or password.'  # Set error message
 
@@ -376,7 +382,7 @@ def delete(request, id):
         messages.success(request, 'Category deleted successfully.')
     except Exception as e:
         messages.error(request, 'Category not deleted.')
-    return redirect('category_data')
+    return redirect('categorydata')
 
 
 
@@ -894,3 +900,54 @@ def create_order(request):
         return JsonResponse({'success': True, 'checkout_request_id': order.id})
 
     return JsonResponse({'success': False}, status=400)
+
+
+
+# Error 404 View
+def custom_404_view(request, exception=None):
+    return render(request, 'error_404.html', status=404)
+
+# Other random Error 404
+def custom_500_view(request):
+    return render(request, 'error_500.html', status=500)
+
+def custom_403_view(request, exception=None):
+    return render(request, 'error_403.html', status=403)
+
+def custom_400_view(request, exception=None):
+    return render(request, 'error_400.html', status=400)
+
+
+
+
+# Ways to respond to the customer messages
+
+def admin_messages(request):
+    """Load all messages."""
+    messages = Contact.objects.all().order_by('-created_at')
+    return render(request, 'customer_messages.html', {'messages': messages})
+
+def mark_as_read(request, message_id):
+    """Mark a message as read."""
+    message = get_object_or_404(Contact, id=message_id)
+    message.is_read = True
+    message.save()
+    return JsonResponse({'success': True})
+
+def delete_message(request, message_id):
+    """Delete a message."""
+    message = get_object_or_404(Contact, id=message_id)
+    message.delete()
+    return JsonResponse({'success': True})
+
+def respond_to_message(request, message_id):
+    """Save a response to the message."""
+    message = get_object_or_404(Contact, id=message_id)
+    if request.method == 'POST':
+        response = request.POST.get('response', '')
+        if response:
+            message.response = response
+            message.is_read = True  # Mark as read after responding
+            message.save()
+            return JsonResponse({'success': True})
+    return JsonResponse({'success': False, 'error': 'Invalid response.'})

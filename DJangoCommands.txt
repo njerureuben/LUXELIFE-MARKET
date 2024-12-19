@@ -95,6 +95,10 @@ Back to the settings.py file
 first Install the Daraja
 pip install django_daraja
 
+pip install django-allauth
+pip install python-dotenv
+
+
 
 
 

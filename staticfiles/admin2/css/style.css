@@ -1,0 +1,604 @@
+/********** Template CSS **********/
+:root {
+    --primary: #ffbf00;
+    --light: #F3F6F9;
+    --dark: #191C24;
+}
+
+.back-to-top {
+    position: fixed;
+    display: none;
+    right: 45px;
+    bottom: 45px;
+    z-index: 99;
+}
+
+
+/*** Spinner ***/
+#spinner {
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity .5s ease-out, visibility 0s linear .5s;
+    z-index: 99999;
+}
+
+#spinner.show {
+    transition: opacity .5s ease-out, visibility 0s linear 0s;
+    visibility: visible;
+    opacity: 1;
+}
+
+
+/*** Button ***/
+.btn {
+    transition: .5s;
+}
+
+.btn.btn-primary {
+    color: #FFFFFF;
+}
+
+.btn-square {
+    width: 38px;
+    height: 38px;
+}
+
+.btn-sm-square {
+    width: 32px;
+    height: 32px;
+}
+
+.btn-lg-square {
+    width: 48px;
+    height: 48px;
+}
+
+.btn-square,
+.btn-sm-square,
+.btn-lg-square {
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: normal;
+    border-radius: 50px;
+}
+
+
+/*** Layout ***/
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 250px;
+    height: 100vh;
+    overflow-y: auto;
+    background: var(--light);
+    transition: 0.5s;
+    z-index: 999;
+}
+
+.content {
+    margin-left: 250px;
+    min-height: 100vh;
+    background: #FFFFFF;
+    transition: 0.5s;
+}
+
+@media (min-width: 992px) {
+    .sidebar {
+        margin-left: 0;
+    }
+
+    .sidebar.open {
+        margin-left: -250px;
+    }
+
+    .content {
+        width: calc(100% - 250px);
+    }
+
+    .content.open {
+        width: 100%;
+        margin-left: 0;
+    }
+}
+
+@media (max-width: 991.98px) {
+    .sidebar {
+        margin-left: -250px;
+    }
+
+    .sidebar.open {
+        margin-left: 0;
+    }
+
+    .content {
+        width: 100%;
+        margin-left: 0;
+    }
+}
+
+
+/*** Navbar ***/
+.sidebar .navbar .navbar-nav .nav-link {
+    padding: 7px 20px;
+    color: var(--dark);
+    font-weight: 500;
+    border-left: 3px solid var(--light);
+    border-radius: 0 30px 30px 0;
+    outline: none;
+}
+
+.sidebar .navbar .navbar-nav .nav-link:hover,
+.sidebar .navbar .navbar-nav .nav-link.active {
+    color: var(--primary);
+    background: #FFFFFF;
+    border-color: var(--primary);
+}
+
+.sidebar .navbar .navbar-nav .nav-link i {
+    width: 40px;
+    height: 40px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #FFFFFF;
+    border-radius: 40px;
+}
+
+.sidebar .navbar .navbar-nav .nav-link:hover i,
+.sidebar .navbar .navbar-nav .nav-link.active i {
+    background: var(--light);
+}
+
+.sidebar .navbar .dropdown-toggle::after {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    border: none;
+    content: "\f107";
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+    transition: .5s;
+}
+
+.sidebar .navbar .dropdown-toggle[aria-expanded=true]::after {
+    transform: rotate(-180deg);
+}
+
+.sidebar .navbar .dropdown-item {
+    padding-left: 25px;
+    border-radius: 0 30px 30px 0;
+}
+
+.content .navbar .navbar-nav .nav-link {
+    margin-left: 25px;
+    padding: 12px 0;
+    color: var(--dark);
+    outline: none;
+}
+
+.content .navbar .navbar-nav .nav-link:hover,
+.content .navbar .navbar-nav .nav-link.active {
+    color: var(--primary);
+}
+
+.content .navbar .sidebar-toggler,
+.content .navbar .navbar-nav .nav-link i {
+    width: 40px;
+    height: 40px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #FFFFFF;
+    border-radius: 40px;
+}
+
+.content .navbar .dropdown-toggle::after {
+    margin-left: 6px;
+    vertical-align: middle;
+    border: none;
+    content: "\f107";
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+    transition: .5s;
+}
+
+.content .navbar .dropdown-toggle[aria-expanded=true]::after {
+    transform: rotate(-180deg);
+}
+
+@media (max-width: 575.98px) {
+    .content .navbar .navbar-nav .nav-link {
+        margin-left: 15px;
+    }
+}
+
+
+/*** Date Picker ***/
+.bootstrap-datetimepicker-widget.bottom {
+    top: auto !important;
+}
+
+.bootstrap-datetimepicker-widget .table * {
+    border-bottom-width: 0px;
+}
+
+.bootstrap-datetimepicker-widget .table th {
+    font-weight: 500;
+}
+
+.bootstrap-datetimepicker-widget.dropdown-menu {
+    padding: 10px;
+    border-radius: 2px;
+}
+
+.bootstrap-datetimepicker-widget table td.active,
+.bootstrap-datetimepicker-widget table td.active:hover {
+    background: var(--primary);
+}
+
+.bootstrap-datetimepicker-widget table td.today::before {
+    border-bottom-color: var(--primary);
+}
+
+
+/*** Testimonial ***/
+.progress .progress-bar {
+    width: 0px;
+    transition: 2s;
+}
+
+
+/*** Testimonial ***/
+.testimonial-carousel .owl-dots {
+    margin-top: 24px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+}
+
+.testimonial-carousel .owl-dot {
+    position: relative;
+    display: inline-block;
+    margin: 0 5px;
+    width: 15px;
+    height: 15px;
+    border: 5px solid var(--primary);
+    border-radius: 15px;
+    transition: .5s;
+}
+
+.testimonial-carousel .owl-dot.active {
+    background: var(--dark);
+    border-color: var(--primary);
+}
+
+.footer {
+        background-color: #f8f9fa;
+        padding: 15px;
+    }
+
+
+.fa .btn{
+    color: #ffbf00;
+}
+
+.fa-chart-bar{
+    color: #ffbf00;
+}
+
+.form-control {
+    border: 1px solid #ccc; /* Example: 1px solid light gray */
+    border-radius: 4px; /* Optional: For rounded corners */
+  outline: none;
+    /*padding: 8px; !* Optional: To add some internal spacing *!*/
+}
+
+.form-control:focus {
+    outline: none; /* Removes the default outline */
+    border-color: #ffbf00; /* Optional: Customize the border color when focused */
+    box-shadow: none; /* Optional: Ensures no shadow effect is applied */
+}
+
+.form-select {
+    border: 1px solid #ccc; /* Example: 1px solid light gray */
+    border-radius: 4px; /* Optional: For rounded corners */
+  outline: none;
+    /*padding: 8px; !* Optional: To add some internal spacing *!*/
+}
+
+.form-select:focus {
+    outline: none; /* Removes the default outline */
+    border-color: #ffbf00; /* Optional: Customize the border color when focused */
+    box-shadow: none; /* Optional: Ensures no shadow effect is applied */
+}
+
+.btn-outline-secondary {
+    border: 1px solid #ccc; /* Example: 1px solid light gray */
+    border-radius: 4px; /* Optional: For rounded corners */
+  outline: none;
+    /*padding: 8px; !* Optional: To add some internal spacing *!*/
+}
+
+.btn-outline-secondary:hover {
+    outline: none; /* Removes the default outline */
+    border-color: #ffbf00; /* Optional: Customize the border color when focused */
+    box-shadow: none; /* Optional: Ensures no shadow effect is applied */
+}
+
+/* Remove the outline when the button is focused */
+button:focus {
+    outline: none;
+    box-shadow: none; /* Removes the default focus ring in browsers like Chrome */
+}
+
+/* Change background and text color on hover */
+button:hover {
+    background-color: #4285F4; /* Example: Google blue, or any color of your choice */
+    color: #fff; /* White text for better contrast */
+    border-color: #4285F4; /* Ensure border matches the background */
+}
+
+/* Optional: Style the search icon within the button */
+button i {
+    font-size: 1.2rem; /* Adjust icon size */
+}
+
+/* Optional: Add smooth transition effect for hover */
+button {
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+/* Button styling */
+.btn-update {
+    background-color: #28a745;
+    outline: none;
+    border: none;
+    outline: none;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.btn-update:focus{
+    outline: none;
+}
+
+.btn-success{
+     background-color: #28a745;
+    outline: none;
+    border: none;
+    outline: none;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.btn-update:hover {
+    background-color: #218838;
+    border-color: #218838;
+}
+
+.btn-delete {
+    background-color: #dc3545;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    text-decoration: none;
+    outline: none;
+    font-size: 14px;
+}
+
+.btn-delete:hover {
+    background-color: #c82333;
+}
+
+.back-to-top {
+    width: 50px; /* Button width */
+    height: 50px; /* Button height */
+    border-radius: 50%; /* Fully round the button */
+    display: flex; /* Center icon inside the button */
+    align-items: center; /* Vertically center the icon */
+    justify-content: center; /* Horizontally center the icon */
+    background-color: #ffbf00; /* Primary blue background color */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); /* Optional: Adds a shadow for elevation */
+    /*transition: background-color 0.3s ease, box-shadow 0.3s ease; !* Smooth hover transition *!*/
+    border: none;
+}
+
+.back-to-top i {
+    font-size: 1.5rem; /* Adjust icon size */
+    color: #FFFFFF; /* White icon color */
+}
+
+.back-to-top:hover {
+    background-color: #ffbf00; /* Darker blue on hover */
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.3); /* Elevates shadow on hover */
+}
+
+
+
+
+/*Drop down Menus
+*/
+/* Style for dropdown menu items */
+.dropdown-menu .dropdown-item {
+    padding-left: 20px; /* Add indentation */
+    font-size: 14px; /* Adjust font size if needed */
+    color: #333; /* Default text color */
+    transition: background-color 0.3s ease; /* Smooth hover effect */
+}
+
+/* Change color on hover for dropdown items */
+.dropdown-menu .dropdown-item:hover {
+    background-color: #f8f9fa; /* Light gray background on hover */
+    color: #000; /* Black text on hover */
+}
+
+/* Optional: Add an icon or marker to signify dropdown items */
+.dropdown-menu .dropdown-item::before {
+    content: "\2022"; /* Bullet symbol */
+    margin-right: 8px; /* Space between bullet and text */
+    color: #ffbf00; /* Bullet color */
+    font-size: 1.2rem;
+    vertical-align: middle;
+}
+
+
+a{
+    color: #ffbf00;
+}
+
+a:hover{
+    color: #ff8000;
+}
+
+
+span{
+    color: #ffbf00;
+}
+
+span:hover{
+    color: #ff8000;
+}
+
+/*Logout*/
+.logout{
+    color: red;
+}
+
+.register-btn{
+    background: #ffbf00;
+  outline: none;
+  color: #fff;
+  border: none #ffbf00;
+  padding: 10px;
+  border-radius: 7px;
+  cursor: pointer;
+}
+
+.register-btn:hover {
+     color: #fff;
+  background-color: #e8b923;
+  border-color: #e8b923;
+}
+
+.register-btn:focus {
+    outline: none; /* Removes default focus outline */
+    box-shadow: none; /* Ensures no shadow is applied */
+    background-color: #e8b923; /* Change to a slightly darker shade for focus */
+    border-color: #e8b923;
+    color: #fff; /* Optional: Text color adjustment */
+}
+
+.register-btn:active {
+    background-color: #dba617; /* Darker shade for active state */
+    border-color: #dba617;
+    color: #fff; /* Ensures contrast */
+}
+
+.spinner-gold {
+    color: #ffbf00; /* Gold color */
+    width: 3rem;
+    height: 3rem;
+}
+
+.footer{
+    margin-top:20px;
+    /*position: fixed;*/
+}
+
+
+/* Buttons Styling */
+.btn-primary {
+    background: linear-gradient(135deg, #ffbf00, #ff9f00); /* Gradient button */
+    border: none;
+    color: white;
+    font-weight: bold;
+    padding: 10px 20px;
+    border-radius: 6px;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, #ff9f00, #ff7700);
+    /*transform: translateY(-2px); !* Lift effect *!*/
+    cursor: pointer;
+}
+
+
+
+/* Subcategory Add Button */
+.btn-sm.register-btn {
+    background-color: #4caf50;
+    color: white;
+    font-size: 0.9rem;
+    border-radius: 6px;
+    padding: 6px 12px;
+    transition: background 0.3s ease;
+}
+
+.btn-sm.register-btn:hover {
+    background-color: #388e3c;
+    cursor: pointer;
+}
+
+/* Remove Subcategory Button */
+.remove-btn-danger {
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    font-size: 0.8rem;
+    /*border-radius: 50%;*/
+    padding: 4px 6px;
+    transition: background 0.3s ease;
+}
+
+.remove-btn-danger:hover {
+    background-color: #c0392b;
+    cursor: pointer;
+}
+
+/* General style for form-check */
+.form-check {
+    border: none;
+    outline: none;
+}
+
+/* Remove default outline and border on checkbox */
+.form-check-input {
+     border-color: #808080;
+    outline: none;
+    box-shadow: none; /* Removes focus ring (outline) */
+}
+
+/* Target the checkbox when clicked (checked state) */
+.form-check-input:checked {
+     /*border-color: none;*/
+    /*border: none;*/
+    outline: none;
+    box-shadow: none; /* Ensures no focus box-shadow */
+}
+
+/* Focus state when tabbing into checkbox */
+.form-check-input:focus {
+    outline: none;
+    box-shadow: none;
+    /*border: none;*/
+    /*border-color: none;*/
+}
+
+.admin-photo {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    border-radius: 90%;
+    /*border: none;*/
+}
